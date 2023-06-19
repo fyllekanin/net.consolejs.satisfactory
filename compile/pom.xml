@@ -59,7 +59,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>net.consolejs.compile.Application</mainClass>
+                            <mainClass>net.consolejs.satisfactory.compile.Application</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

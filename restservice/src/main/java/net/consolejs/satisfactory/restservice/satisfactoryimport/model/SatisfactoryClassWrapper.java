@@ -1,7 +1,7 @@
-package net.consolejs.restservice.satisfactoryimport.model;
+package net.consolejs.satisfactory.restservice.satisfactoryimport.model;
 
 import com.google.gson.annotations.SerializedName;
-import net.consolejs.entityview.satisfactory.NativeClass;
+import net.consolejs.satisfactory.entityview.satisfactory.NativeClass;
 
 import java.util.List;
 import java.util.Objects;

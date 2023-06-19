@@ -1,8 +1,8 @@
-package net.consolejs.restservice.satisfactoryimport;
+package net.consolejs.satisfactory.restservice.satisfactoryimport;
 
-import net.consolejs.entityview.satisfactory.NativeClass;
-import net.consolejs.restservice.satisfactoryimport.model.SatisfactoryClassWrapper;
-import net.consolejs.restservice.satisfactoryimport.model.SatisfactoryImport;
+import net.consolejs.satisfactory.entityview.satisfactory.NativeClass;
+import net.consolejs.satisfactory.restservice.satisfactoryimport.model.SatisfactoryClassWrapper;
+import net.consolejs.satisfactory.restservice.satisfactoryimport.model.SatisfactoryImport;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;

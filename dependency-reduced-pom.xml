@@ -28,7 +28,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>net.consolejs.compile.Application</mainClass>
+                  <mainClass>net.consolejs.satisfactory.compile.Application</mainClass>
                 </transformer>
               </transformers>
             </configuration>

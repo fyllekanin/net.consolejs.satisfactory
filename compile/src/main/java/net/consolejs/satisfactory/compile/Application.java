@@ -1,6 +1,6 @@
-package net.consolejs.compile;
+package net.consolejs.satisfactory.compile;
 
-import net.consolejs.service.ServiceResolver;
+import net.consolejs.satisfactory.service.ServiceResolver;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -18,7 +18,7 @@ public class Application {
     public static void main(String[] args) throws IOException {
         // Create a resource config that scans for JAX-RS resources and providers in com.javahelps package
         ResourceConfig config = new ResourceConfig()
-                .packages(true, "net.consolejs.restservice")
+                .packages(true, "net.consolejs.satisfactory.restservice")
                 .register(new ServiceResolver());
         // Create and start a grizzly http server
         HttpServer httpServer = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), config);

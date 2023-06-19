@@ -1,6 +1,6 @@
-package net.consolejs.restservice.satisfactoryimport;
+package net.consolejs.satisfactory.restservice.satisfactoryimport;
 
-import net.consolejs.restservice.satisfactoryimport.model.SatisfactoryClass;
+import net.consolejs.satisfactory.restservice.satisfactoryimport.model.SatisfactoryClass;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

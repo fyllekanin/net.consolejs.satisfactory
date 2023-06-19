@@ -1,4 +1,4 @@
-package net.consolejs.service.http;
+package net.consolejs.satisfactory.service.http;
 
 import org.jvnet.hk2.annotations.Service;
 

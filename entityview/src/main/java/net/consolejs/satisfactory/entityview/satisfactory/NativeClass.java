@@ -1,4 +1,4 @@
-package net.consolejs.entityview.satisfactory;
+package net.consolejs.satisfactory.entityview.satisfactory;
 
 import com.google.gson.annotations.SerializedName;
 

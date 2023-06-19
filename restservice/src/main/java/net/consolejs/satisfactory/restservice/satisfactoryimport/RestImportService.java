@@ -1,4 +1,4 @@
-package net.consolejs.restservice.satisfactoryimport;
+package net.consolejs.satisfactory.restservice.satisfactoryimport;
 
 import com.google.gson.Gson;
 import jakarta.inject.Inject;
@@ -7,8 +7,8 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import net.consolejs.restservice.satisfactoryimport.model.SatisfactoryImport;
-import net.consolejs.service.http.HttpService;
+import net.consolejs.satisfactory.restservice.satisfactoryimport.model.SatisfactoryImport;
+import net.consolejs.satisfactory.service.http.HttpService;
 
 import java.util.logging.Logger;
 

@@ -1,4 +1,4 @@
-package net.consolejs.restservice.satisfactoryimport.model;
+package net.consolejs.satisfactory.restservice.satisfactoryimport.model;
 
 import com.google.gson.annotations.SerializedName;
 

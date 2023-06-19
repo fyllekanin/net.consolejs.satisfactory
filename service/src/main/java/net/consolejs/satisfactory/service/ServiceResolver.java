@@ -1,6 +1,6 @@
-package net.consolejs.service;
+package net.consolejs.satisfactory.service;
 
-import net.consolejs.service.http.HttpService;
+import net.consolejs.satisfactory.service.http.HttpService;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 public class ServiceResolver extends AbstractBinder {
