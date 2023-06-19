@@ -1,5 +1,6 @@
 package net.consolejs.satisfactory.compile;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import net.consolejs.satisfactory.service.ServiceResolver;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
@@ -17,6 +18,10 @@ public class Application {
 
     public static void main(String[] args) throws IOException {
         // Create a resource config that scans for JAX-RS resources and providers in com.javahelps package
+        Dotenv.configure()
+                .systemProperties()
+                .load();
+        
         ResourceConfig config = new ResourceConfig()
                 .packages(true, "net.consolejs.satisfactory.restservice")
                 .register(new ServiceResolver());
