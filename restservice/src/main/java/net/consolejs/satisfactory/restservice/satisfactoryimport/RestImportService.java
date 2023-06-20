@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.Response;
 import net.consolejs.satisfactory.restservice.satisfactoryimport.model.SatisfactoryClassWrapper;
 import net.consolejs.satisfactory.restservice.satisfactoryimport.model.SatisfactoryImport;
 import net.consolejs.satisfactory.restservice.satisfactoryimport.provider.SatisfactoryImportProvider;
+import net.consolejs.satisfactory.service.file.FileService;
 import net.consolejs.satisfactory.service.http.HttpService;
 import org.glassfish.grizzly.utils.Pair;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
@@ -31,6 +32,8 @@ public class RestImportService {
     private static final Logger LOGGER = Logger.getLogger(RestImportService.class.getName());
     @Inject
     private HttpService myHttpService;
+    @Inject
+    private FileService myFileService;
 
     @POST
     @Path("/import")
@@ -39,6 +42,12 @@ public class RestImportService {
         try {
             SatisfactoryImportProvider provider = new SatisfactoryImportProvider(formParams);
             SatisfactoryImport satisfactoryImport = provider.getSatisfactoryImport();
+
+            for (Pair<ZipEntry, byte[]> entryPair : satisfactoryImport.getImageResources()) {
+                myFileService.writeFile(String.format("%s/%s", provider.getGameVersion(), entryPair.getFirst().getName()),
+                        entryPair.getSecond());
+            }
+
         } catch (IOException exception) {
             LOGGER.log(Level.SEVERE, String.format("Import failed: \"%s\"", exception.getMessage()));
             return Response.status(500)
