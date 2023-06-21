@@ -18,8 +18,7 @@
 
     <properties>
         <revision>1.0.0-SNAPSHOT</revision>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jersey.version>3.1.0</jersey.version>
         <gson.version>2.10.1</gson.version>
@@ -27,6 +26,7 @@
         <junit.jupiter.engine.version>5.5.2</junit.jupiter.engine.version>
         <mokito.junit.version>4.5.1</mokito.junit.version>
         <maven.surefire.version>3.1.2</maven.surefire.version>
+        <maven.compiler.version>3.8.1</maven.compiler.version>
     </properties>
 
     <dependencyManagement>
@@ -71,6 +71,14 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.version}</version>
+                <configuration>
+                    <release>17</release>
+                </configuration>
+            </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.surefire.version}</version>

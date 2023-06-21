@@ -61,7 +61,7 @@ public class RestImportService {
     public Response satisfactoryImportDelete(@PathParam("gameVersion") String gameVersion) {
         try {
             if (!mySatisfactoryImporter.isAlreadyImported(gameVersion)) {
-                return Response.status(Response.Status.CONFLICT)
+                return Response.status(Response.Status.NOT_FOUND)
                         .entity("The provided gameVersion is not imported")
                         .build();
             }
