@@ -3,7 +3,7 @@ package net.consolejs.satisfactory.restservice.satisfactoryimport.importer;
 import net.consolejs.satisfactory.entityview.document.recipe.RecipeDocument;
 import net.consolejs.satisfactory.entityview.satisfactory.NativeClass;
 import net.consolejs.satisfactory.repository.RepositoryFactory;
-import net.consolejs.satisfactory.repository.recipes.RecipeRepository;
+import net.consolejs.satisfactory.repository.recipe.RecipeRepository;
 import net.consolejs.satisfactory.restservice.satisfactoryimport.model.SatisfactoryClass;
 import net.consolejs.satisfactory.restservice.satisfactoryimport.model.SatisfactoryClassWrapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,12 +33,9 @@ public class TestRecipeImporter {
     @Mock
     private SatisfactoryClass recipeClass;
 
-    private RecipeImporter recipeImporter;
-
     @BeforeEach
     public void setup() {
         when(repositoryFactory.of(RecipeRepository.class)).thenReturn(recipeRepository);
-        recipeImporter = new RecipeImporter(repositoryFactory);
     }
 
     @Test
@@ -48,7 +45,7 @@ public class TestRecipeImporter {
         String gameVersion = "1.0";
 
         // When
-        recipeImporter.importRecipes(classWrappers, gameVersion);
+        new RecipeImporter(repositoryFactory, classWrappers, gameVersion).run();
 
         // Then
         verifyNoInteractions(recipeRepository);
@@ -62,7 +59,7 @@ public class TestRecipeImporter {
         String gameVersion = "1.0";
 
         // When
-        recipeImporter.importRecipes(classWrappers, gameVersion);
+        new RecipeImporter(repositoryFactory, classWrappers, gameVersion).run();
 
         // Then
         verifyNoInteractions(recipeRepository);
@@ -77,7 +74,7 @@ public class TestRecipeImporter {
         String gameVersion = "1.0";
 
         // When
-        recipeImporter.importRecipes(classWrappers, gameVersion);
+        new RecipeImporter(repositoryFactory, classWrappers, gameVersion).run();
 
         // Then
         verifyNoInteractions(recipeRepository);
@@ -93,7 +90,7 @@ public class TestRecipeImporter {
         String gameVersion = "1.0";
 
         // When
-        recipeImporter.importRecipes(classWrappers, gameVersion);
+        new RecipeImporter(repositoryFactory, classWrappers, gameVersion).run();
 
         // Then
         verify(recipeRepository).create(any(RecipeDocument.class));
@@ -115,7 +112,7 @@ public class TestRecipeImporter {
         String gameVersion = "1.0";
 
         // When
-        recipeImporter.importRecipes(classWrappers, gameVersion);
+        new RecipeImporter(repositoryFactory, classWrappers, gameVersion).run();
 
         // Then
         verify(recipeClass).getClassName();

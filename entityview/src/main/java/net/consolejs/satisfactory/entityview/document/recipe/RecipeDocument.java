@@ -10,10 +10,8 @@ public class RecipeDocument {
     private final String myGameVersion;
     @SerializedName("className")
     private final String myClassName;
-
     @SerializedName("fullName")
     private final String myFullName;
-
     @SerializedName("displayName")
     private final String myDisplayName;
     @SerializedName("ingredients")
@@ -114,7 +112,8 @@ public class RecipeDocument {
             return false;
         }
         RecipeDocument other = (RecipeDocument) o;
-        return Objects.equals(myClassName, other.myClassName) &&
+        return Objects.equals(myGameVersion, other.myGameVersion) &&
+                Objects.equals(myClassName, other.myClassName) &&
                 Objects.equals(myFullName, other.myFullName) &&
                 Objects.equals(myDisplayName, other.myDisplayName) &&
                 Objects.equals(myIngredients, other.myIngredients) &&
@@ -123,6 +122,13 @@ public class RecipeDocument {
 
     @Override
     public int hashCode() {
-        return Objects.hash(myClassName, myFullName, myDisplayName, myIngredients, myDuration);
+        return Objects.hash(
+                myGameVersion,
+                myClassName,
+                myFullName,
+                myDisplayName,
+                myIngredients,
+                myDuration
+        );
     }
 }

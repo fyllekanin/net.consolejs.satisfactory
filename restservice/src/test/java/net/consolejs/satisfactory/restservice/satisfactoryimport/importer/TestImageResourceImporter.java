@@ -3,7 +3,6 @@ package net.consolejs.satisfactory.restservice.satisfactoryimport.importer;
 import net.consolejs.satisfactory.restservice.satisfactoryimport.model.SatisfactoryImport;
 import net.consolejs.satisfactory.service.file.FileService;
 import org.glassfish.grizzly.utils.Pair;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -25,13 +24,6 @@ public class TestImageResourceImporter {
     @Mock
     private ZipEntry zipEntry;
 
-    private ImageResourceImporter imageResourceImporter;
-
-    @BeforeEach
-    public void setup() {
-        imageResourceImporter = new ImageResourceImporter(fileService);
-    }
-
     @Test
     public void testImportImageResources() {
         // Given
@@ -43,7 +35,8 @@ public class TestImageResourceImporter {
         when(zipEntry.getName()).thenReturn("image.png");
 
         // When
-        imageResourceImporter.importImageResources(satisfactoryImport, gameVersion);
+        new ImageResourceImporter(fileService, satisfactoryImport, gameVersion)
+                .run();
 
         // Then
         verify(fileService).writeFile("1.0/image.png", imageData);

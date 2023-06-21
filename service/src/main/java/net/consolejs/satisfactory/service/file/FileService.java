@@ -22,6 +22,20 @@ public class FileService {
         myRootPath = System.getProperty(FILE_PATH_KEY);
     }
 
+    public void deleteDirectory(String path) {
+        String directoryPath = String.format("%s/%s", myRootPath, path);
+        File directory = new File(directoryPath);
+        File[] content = directory.listFiles();
+
+        if (content != null) {
+            for (File file : content) {
+                deleteDirectory(file.getPath().replace(myRootPath, ""));
+            }
+        }
+
+        directory.delete();
+    }
+
     public void writeFile(String path, byte[] bytes) {
         LOGGER.log(Level.INFO, String.format("Starting to write file: \"%s\"", path));
         String directoryPath = String.format("%s/%s", myRootPath, getDirectoryPath(path));

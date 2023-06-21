@@ -15,6 +15,12 @@ public class SatisfactoryClass {
     private final String myIngredients;
     @SerializedName("mManufactoringDuration")
     private final float myManufactoringDuration;
+    @SerializedName("mDescription")
+    private final String myDescription;
+    @SerializedName("mSmallIcon")
+    private final String mySmallIcon;
+    @SerializedName("mPersistentBigIcon")
+    private final String myBigIcon;
 
     private SatisfactoryClass(Builder builder) {
         myClassName = builder.myClassName;
@@ -22,8 +28,14 @@ public class SatisfactoryClass {
         myDisplayName = builder.myDisplayName;
         myIngredients = builder.myIngredients;
         myManufactoringDuration = builder.myManufactoringDuration;
+        myDescription = builder.myDescription;
+        mySmallIcon = builder.mySmallIcon;
+        myBigIcon = builder.myBigIcon;
     }
 
+    public static Builder newBuilder() {
+        return new Builder();
+    }
 
     public String getClassName() {
         return myClassName;
@@ -45,12 +57,47 @@ public class SatisfactoryClass {
         return myIngredients;
     }
 
-    public static Builder newBuilder() {
-        return new Builder();
+    public String getDescription() {
+        return myDescription;
+    }
+
+    public String getSmallIcon() {
+        return mySmallIcon;
+    }
+
+    public String getBigIcon() {
+        return myBigIcon;
     }
 
     public Builder newBuilderFromCurrent() {
         return new Builder(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        SatisfactoryClass other = (SatisfactoryClass) obj;
+
+        return Objects.equals(getClassName(), other.getClassName()) &&
+                Objects.equals(getFullName(), other.getFullName()) &&
+                Objects.equals(getDisplayName(), other.getDisplayName()) &&
+                Objects.equals(getIngredients(), other.getIngredients()) &&
+                Objects.equals(getManufactoringDuration(), other.getManufactoringDuration()) &&
+                Objects.equals(getDescription(), other.getDescription()) &&
+                Objects.equals(getSmallIcon(), other.getSmallIcon()) &&
+                Objects.equals(getBigIcon(), other.getBigIcon());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(myClassName, myFullName, myDisplayName, myIngredients, myManufactoringDuration, myDescription, mySmallIcon, myBigIcon);
     }
 
     public static class Builder {
@@ -59,6 +106,9 @@ public class SatisfactoryClass {
         private String myDisplayName;
         private String myIngredients;
         private float myManufactoringDuration;
+        private String myDescription;
+        private String mySmallIcon;
+        private String myBigIcon;
 
         private Builder() {
         }
@@ -69,6 +119,9 @@ public class SatisfactoryClass {
             myDisplayName = original.myDisplayName;
             myIngredients = original.myIngredients;
             myManufactoringDuration = original.myManufactoringDuration;
+            myDescription = original.myDescription;
+            mySmallIcon = original.mySmallIcon;
+            myBigIcon = original.myBigIcon;
         }
 
         public Builder withClassName(String className) {
@@ -96,32 +149,23 @@ public class SatisfactoryClass {
             return this;
         }
 
+        public Builder withDescription(String description) {
+            myDescription = description;
+            return this;
+        }
+
+        public Builder withSmallIcon(String smallIcon) {
+            mySmallIcon = smallIcon;
+            return this;
+        }
+
+        public Builder withBigIcon(String bigIcon) {
+            myBigIcon = bigIcon;
+            return this;
+        }
+
         public SatisfactoryClass build() {
             return new SatisfactoryClass(this);
         }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-
-        SatisfactoryClass other = (SatisfactoryClass) obj;
-
-        return Objects.equals(getClassName(), other.getClassName()) &&
-                Objects.equals(getFullName(), other.getFullName()) &&
-                Objects.equals(getDisplayName(), other.getDisplayName()) &&
-                Objects.equals(getIngredients(), other.getIngredients()) &&
-                Objects.equals(getManufactoringDuration(), other.getManufactoringDuration());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(myClassName, myFullName, myDisplayName, myIngredients, myManufactoringDuration);
     }
 }

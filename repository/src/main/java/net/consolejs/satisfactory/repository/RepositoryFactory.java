@@ -4,15 +4,14 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
-import net.consolejs.satisfactory.repository.recipes.RecipeRepository;
+import net.consolejs.satisfactory.repository.recipe.RecipeRepository;
+import net.consolejs.satisfactory.repository.resource.ResourceRepository;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
-import org.jvnet.hk2.annotations.Service;
 
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
-@Service()
 public class RepositoryFactory {
     private static final String PORT_KEY = "SATISFACTORY_MONGODB_PORT";
     private static final String HOST_KEY = "SATISFACTORY_MONGODB_HOST";
@@ -20,8 +19,6 @@ public class RepositoryFactory {
     private static final String PASSWORD_KEY = "SATISFACTORY_MONGODB_PASSWORD";
     private static final String AUTH_DATABASE_KEY = "SATISFACTORY_MONGODB_AUTH_DATABASE";
     private static final String DATABASE_KEY = "SATISFACTORY_MONGODB_DATABASE";
-
-    private final MongoClient myClient;
     private final MongoDatabase myDatabase;
 
     public RepositoryFactory() {
@@ -32,8 +29,8 @@ public class RepositoryFactory {
                 System.getProperty(PORT_KEY),
                 System.getProperty(AUTH_DATABASE_KEY));
 
-        myClient = MongoClients.create(uri);
-        myDatabase = myClient.getDatabase(System.getProperty(DATABASE_KEY));
+        MongoClient client = MongoClients.create(uri);
+        myDatabase = client.getDatabase(System.getProperty(DATABASE_KEY));
 
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder()
@@ -41,9 +38,13 @@ public class RepositoryFactory {
         myDatabase.withCodecRegistry(pojoCodecRegistry);
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T of(Class<T> clazz) {
         if (clazz.equals(RecipeRepository.class)) {
             return (T) new RecipeRepository(myDatabase);
+        }
+        if (clazz.equals(ResourceRepository.class)) {
+            return (T) new ResourceRepository(myDatabase);
         }
         return null;
     }
