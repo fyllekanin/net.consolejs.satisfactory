@@ -4,6 +4,7 @@ package net.consolejs.satisfactory.restservice.satisfactoryimport.model;
 import org.glassfish.grizzly.utils.Pair;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 
 public class SatisfactoryImport {
@@ -48,5 +49,23 @@ public class SatisfactoryImport {
         public SatisfactoryImport build() {
             return new SatisfactoryImport(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        SatisfactoryImport other = (SatisfactoryImport) obj;
+        return Objects.equals(getDocs(), other.getDocs())
+                && Objects.equals(getImageResources(), other.getImageResources());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDocs(), getImageResources());
     }
 }
