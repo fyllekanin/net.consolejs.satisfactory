@@ -5,6 +5,8 @@
     <file url="file://$PROJECT_DIR$/compile/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/entityview/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/entityview/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/repository/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/repository/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/restservice/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/restservice/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/service/src/main/java" charset="UTF-8" />

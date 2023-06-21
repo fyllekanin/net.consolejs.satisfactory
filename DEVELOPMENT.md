@@ -2,6 +2,24 @@
 
 This file is intended for when working with the project.
 
+### Database
+
+The project is expecting a **mongodb** database to be present, the simplest setup locally
+is to setup a docker.
+
+Inside **docker/mongodb** folder there is a docker-compose.yml which starts up
+a mongodb server with:
+
+- port
+    - 27017
+- username
+    - root
+- password
+    - example
+
+admin interface reachable at:
+[http://localhost:8081](http://localhost:8081)
+
 ### Satisfactory files
 
 There is x2 files from Satisfactory needed when doing the import.
@@ -34,4 +52,4 @@ C:\Program Files\Epic Games\<version of the game>\FactoryGame\Content\Paks
 
 - Only the content, not the full folder which was created during export
 
-4. 
+4. Make a ZIP of all the content inside the temporary folder to be used for the import

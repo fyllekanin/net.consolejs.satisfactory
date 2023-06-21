@@ -7,6 +7,8 @@ import java.util.Objects;
 public class SatisfactoryClass {
     @SerializedName("ClassName")
     private final String myClassName;
+    @SerializedName("FullName")
+    private final String myFullName;
 
     @SerializedName("mPlayFireEffects")
     private final String myPlayFireEffects;
@@ -154,6 +156,7 @@ public class SatisfactoryClass {
 
     private SatisfactoryClass(Builder builder) {
         myClassName = builder.myClassName;
+        myFullName = builder.myFullName;
         myPlayFireEffects = builder.myPlayFireEffects;
         myAmmoFiredDelegate = builder.myAmmoFiredDelegate;
         myFiringTransform = builder.myFiringTransform;
@@ -207,6 +210,10 @@ public class SatisfactoryClass {
 
     public String getClassName() {
         return myClassName;
+    }
+
+    public String getFullName() {
+        return myFullName;
     }
 
     public String getPlayFireEffects() {
@@ -411,6 +418,7 @@ public class SatisfactoryClass {
 
     public static class Builder {
         private String myClassName;
+        private String myFullName;
         private String myPlayFireEffects;
         private String myAmmoFiredDelegate;
         private String myFiringTransform;
@@ -465,6 +473,7 @@ public class SatisfactoryClass {
 
         private Builder(SatisfactoryClass original) {
             myClassName = original.myClassName;
+            myFullName = original.myFullName;
             myPlayFireEffects = original.myPlayFireEffects;
             myAmmoFiredDelegate = original.myAmmoFiredDelegate;
             myFiringTransform = original.myFiringTransform;
@@ -517,6 +526,11 @@ public class SatisfactoryClass {
 
         public Builder withClassName(String className) {
             myClassName = className;
+            return this;
+        }
+
+        public Builder withFullName(String fullName) {
+            myFullName = fullName;
             return this;
         }
 

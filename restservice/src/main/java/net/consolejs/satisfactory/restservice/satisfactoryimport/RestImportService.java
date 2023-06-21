@@ -6,6 +6,11 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import net.consolejs.satisfactory.entityview.document.recipe.RecipeDocument;
+import net.consolejs.satisfactory.entityview.satisfactory.NativeClass;
+import net.consolejs.satisfactory.repository.RepositoryFactory;
+import net.consolejs.satisfactory.repository.recipes.RecipeRepository;
+import net.consolejs.satisfactory.restservice.satisfactoryimport.model.SatisfactoryClass;
 import net.consolejs.satisfactory.restservice.satisfactoryimport.model.SatisfactoryClassWrapper;
 import net.consolejs.satisfactory.restservice.satisfactoryimport.model.SatisfactoryImport;
 import net.consolejs.satisfactory.restservice.satisfactoryimport.provider.SatisfactoryImportProvider;
@@ -34,6 +39,8 @@ public class RestImportService {
     private HttpService myHttpService;
     @Inject
     private FileService myFileService;
+    @Inject
+    private RepositoryFactory myRepositoryFactory;
 
     @POST
     @Path("/import")
@@ -48,6 +55,20 @@ public class RestImportService {
                         entryPair.getSecond());
             }
 
+            RecipeRepository repository = myRepositoryFactory.of(RecipeRepository.class);
+            provider.getSatisfactoryClassWrappers(satisfactoryImport)
+                    .stream()
+                    .filter(entry -> NativeClass.FGRecipe.equals(entry.getNativeClass()))
+                    .findFirst()
+                    .ifPresent(entry -> {
+                        for (SatisfactoryClass clazz : entry.getClasses()) {
+                            repository.create(RecipeDocument.newBuilder()
+                                    .withClassName(clazz.getClassName())
+                                    .withFullName(clazz.getFullName())
+                                    .withDisplayName(clazz.getDisplayName())
+                                    .build());
+                        }
+                    });
         } catch (IOException exception) {
             LOGGER.log(Level.SEVERE, String.format("Import failed: \"%s\"", exception.getMessage()));
             return Response.status(500)

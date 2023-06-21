@@ -9,46 +9,35 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>restservice</artifactId>
+    <artifactId>repository</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <mongodb.driver.version>4.9.1</mongodb.driver.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.glassfish.jersey.containers</groupId>
-            <artifactId>jersey-container-grizzly2-http</artifactId>
+            <groupId>org.mongodb</groupId>
+            <artifactId>mongodb-driver-sync</artifactId>
+            <version>${mongodb.driver.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.glassfish.jersey.inject</groupId>
             <artifactId>jersey-hk2</artifactId>
         </dependency>
-
         <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-multipart</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>net.consolejs</groupId>
-            <artifactId>service</artifactId>
-            <version>${revision}</version>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-api</artifactId>
+            <version>3.0.3</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.consolejs</groupId>
             <artifactId>entityview</artifactId>
-            <version>${revision}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.consolejs</groupId>
-            <artifactId>repository</artifactId>
-            <version>${revision}</version>
+            <version>1.0.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
