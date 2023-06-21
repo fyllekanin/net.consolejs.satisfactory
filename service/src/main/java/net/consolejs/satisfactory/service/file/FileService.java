@@ -28,6 +28,10 @@ public class FileService {
         try {
             Files.createDirectories(Paths.get(directoryPath));
             File file = new File(String.format("%s/%s", myRootPath, path));
+            if (file.exists()) {
+                LOGGER.log(Level.INFO, String.format("File already exists: \"%s\"", path));
+                return;
+            }
 
             OutputStream outputStream = new FileOutputStream(file);
             outputStream.write(bytes);
@@ -35,7 +39,7 @@ public class FileService {
 
             LOGGER.log(Level.INFO, String.format("Finished to write file: \"%s\"", path));
         } catch (IOException exception) {
-            LOGGER.log(Level.SEVERE, String.format("Failed to write file: \"%s\"", path));
+            LOGGER.log(Level.SEVERE, String.format("Failed to write file: \"%s\", because: %s", path, exception.getMessage()));
         }
     }
 

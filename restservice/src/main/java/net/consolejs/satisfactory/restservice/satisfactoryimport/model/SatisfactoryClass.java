@@ -153,6 +153,10 @@ public class SatisfactoryClass {
 
     @SerializedName("mResourceSinkPoints")
     private final String myResourceSinkPoints;
+    @SerializedName("mIngredients")
+    private final String myIngredients;
+    @SerializedName("mManufactoringDuration")
+    private final float myManufactoringDuration;
 
     private SatisfactoryClass(Builder builder) {
         myClassName = builder.myClassName;
@@ -205,6 +209,8 @@ public class SatisfactoryClass {
         myScannerDisplayText = builder.myScannerDisplayText;
         myScannerLightColor = builder.myScannerLightColor;
         myResourceSinkPoints = builder.myResourceSinkPoints;
+        myIngredients = builder.myIngredients;
+        myManufactoringDuration = builder.myManufactoringDuration;
     }
 
 
@@ -408,6 +414,14 @@ public class SatisfactoryClass {
         return myResourceSinkPoints;
     }
 
+    public float getManufactoringDuration() {
+        return myManufactoringDuration;
+    }
+
+    public String getIngredients() {
+        return myIngredients;
+    }
+
     public static Builder newBuilder() {
         return new Builder();
     }
@@ -467,6 +481,8 @@ public class SatisfactoryClass {
         private String myScannerDisplayText;
         private String myScannerLightColor;
         private String myResourceSinkPoints;
+        private String myIngredients;
+        private float myManufactoringDuration;
 
         private Builder() {
         }
@@ -522,6 +538,8 @@ public class SatisfactoryClass {
             myScannerDisplayText = original.myScannerDisplayText;
             myScannerLightColor = original.myScannerLightColor;
             myResourceSinkPoints = original.myResourceSinkPoints;
+            myIngredients = original.myIngredients;
+            myManufactoringDuration = original.myManufactoringDuration;
         }
 
         public Builder withClassName(String className) {
@@ -774,6 +792,16 @@ public class SatisfactoryClass {
             return this;
         }
 
+        public Builder withIngredients(String ingredients) {
+            myIngredients = ingredients;
+            return this;
+        }
+
+        public Builder withManufactoringDuration(float manufactoringDuration) {
+            myManufactoringDuration = manufactoringDuration;
+            return this;
+        }
+
         public SatisfactoryClass build() {
             return new SatisfactoryClass(this);
         }
@@ -839,6 +867,8 @@ public class SatisfactoryClass {
                 Objects.equals(getShouldOverrideScannerDisplayText(), other.getShouldOverrideScannerDisplayText()) &&
                 Objects.equals(getScannerDisplayText(), other.getScannerDisplayText()) &&
                 Objects.equals(getScannerLightColor(), other.getScannerLightColor()) &&
-                Objects.equals(getResourceSinkPoints(), other.getResourceSinkPoints());
+                Objects.equals(getResourceSinkPoints(), other.getResourceSinkPoints()) &&
+                Objects.equals(getIngredients(), other.getIngredients()) &&
+                Objects.equals(getManufactoringDuration(), other.getManufactoringDuration());
     }
 }

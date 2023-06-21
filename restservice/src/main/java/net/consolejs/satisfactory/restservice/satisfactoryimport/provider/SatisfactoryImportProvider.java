@@ -60,27 +60,4 @@ public class SatisfactoryImportProvider {
         return new Gson().fromJson(json, new TypeToken<ArrayList<SatisfactoryClassWrapper>>() {
         }.getType());
     }
-
-    private SatisfactoryImport getSatisfactoryImport(InputStream inputStream) {
-        SatisfactoryImport.Builder builder = SatisfactoryImport.newBuilder();
-        ZipInputStream stream = new ZipInputStream(inputStream);
-        List<Pair<ZipEntry, byte[]>> imageResources = new ArrayList<>();
-
-        ZipEntry entry;
-        try {
-            while ((entry = stream.getNextEntry()) != null) {
-                if (entry.getName().equals(DOCS_NAME)) {
-                    builder.withDocs(new Pair<>(entry, stream.readAllBytes()));
-                } else if (entry.getName().endsWith(RESOURCE_ENDING)) {
-                    imageResources.add(new Pair<>(entry, stream.readAllBytes()));
-                }
-            }
-            stream.close();
-        } catch (IOException exception) {
-            // Empty
-        }
-        return builder
-                .withImageResources(imageResources)
-                .build();
-    }
 }
