@@ -1,34 +1,38 @@
-package net.consolejs.satisfactory.entityview.document.resource;
+package net.consolejs.satisfactory.entityview.document.extractor;
 
 import com.google.gson.annotations.SerializedName;
 import net.consolejs.satisfactory.entityview.satisfactory.ResourceType;
 
+import java.util.List;
 import java.util.Objects;
 
-public class ResourceDocument {
+public class ExtractorDocument {
     @SerializedName("gameVersion")
     private final String myGameVersion;
     @SerializedName("className")
     private final String myClassName;
+    @SerializedName("resourceType")
+    private final ResourceType myResourceType;
     @SerializedName("displayName")
     private final String myDisplayName;
     @SerializedName("description")
     private final String myDescription;
+    @SerializedName("allowedResources")
+    private final List<String> myAllowedResources;
     @SerializedName("smallIcon")
     private final String mySmallIcon;
     @SerializedName("bigIcon")
     private final String myBigIcon;
-    @SerializedName("resourceType")
-    private final ResourceType myResourceType;
 
-    private ResourceDocument(Builder builder) {
+    public ExtractorDocument(Builder builder) {
         myGameVersion = builder.myGameVersion;
         myClassName = builder.myClassName;
+        myResourceType = builder.myResourceType;
         myDisplayName = builder.myDisplayName;
         myDescription = builder.myDescription;
+        myAllowedResources = builder.myAllowedResources;
         mySmallIcon = builder.mySmallIcon;
         myBigIcon = builder.myBigIcon;
-        myResourceType = builder.myResourceType;
     }
 
     public static Builder newBuilder() {
@@ -43,12 +47,20 @@ public class ResourceDocument {
         return myClassName;
     }
 
+    public ResourceType getResourceType() {
+        return myResourceType;
+    }
+
     public String getDisplayName() {
         return myDisplayName;
     }
 
     public String getDescription() {
         return myDescription;
+    }
+
+    public List<String> getAllowedResources() {
+        return myAllowedResources;
     }
 
     public String getSmallIcon() {
@@ -59,10 +71,6 @@ public class ResourceDocument {
         return myBigIcon;
     }
 
-    public ResourceType getResourceType() {
-        return myResourceType;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -71,14 +79,15 @@ public class ResourceDocument {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ResourceDocument other = (ResourceDocument) o;
+        ExtractorDocument other = (ExtractorDocument) o;
         return Objects.equals(myGameVersion, other.myGameVersion) &&
                 Objects.equals(myClassName, other.myClassName) &&
                 Objects.equals(myDisplayName, other.myDisplayName) &&
                 Objects.equals(myDescription, other.myDescription) &&
+                Objects.equals(myResourceType, other.myResourceType) &&
+                Objects.equals(myAllowedResources, other.myAllowedResources) &&
                 Objects.equals(mySmallIcon, other.mySmallIcon) &&
-                Objects.equals(myBigIcon, other.myBigIcon) &&
-                Objects.equals(myResourceType, other.myResourceType);
+                Objects.equals(myBigIcon, other.myBigIcon);
     }
 
     @Override
@@ -88,20 +97,22 @@ public class ResourceDocument {
                 myClassName,
                 myDisplayName,
                 myDescription,
+                myResourceType,
+                myAllowedResources,
                 mySmallIcon,
-                myBigIcon,
-                myResourceType
+                myBigIcon
         );
     }
 
     public static class Builder {
         private String myGameVersion;
         private String myClassName;
+        private ResourceType myResourceType;
         private String myDisplayName;
         private String myDescription;
+        private List<String> myAllowedResources;
         private String mySmallIcon;
         private String myBigIcon;
-        private ResourceType myResourceType;
 
         private Builder() {
             // Empty
@@ -117,6 +128,11 @@ public class ResourceDocument {
             return this;
         }
 
+        public Builder withResourceType(ResourceType resourceType) {
+            myResourceType = resourceType;
+            return this;
+        }
+
         public Builder withDisplayName(String displayName) {
             myDisplayName = displayName;
             return this;
@@ -124,6 +140,11 @@ public class ResourceDocument {
 
         public Builder withDescription(String description) {
             myDescription = description;
+            return this;
+        }
+
+        public Builder withAllowedResources(List<String> allowedResources) {
+            myAllowedResources = allowedResources;
             return this;
         }
 
@@ -137,13 +158,8 @@ public class ResourceDocument {
             return this;
         }
 
-        public Builder withResourceType(ResourceType resourceType) {
-            myResourceType = resourceType;
-            return this;
-        }
-
-        public ResourceDocument build() {
-            return new ResourceDocument(this);
+        public ExtractorDocument build() {
+            return new ExtractorDocument(this);
         }
     }
 }

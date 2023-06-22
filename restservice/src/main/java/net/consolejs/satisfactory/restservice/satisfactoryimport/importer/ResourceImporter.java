@@ -34,6 +34,7 @@ public class ResourceImporter implements Runnable {
                                 .withDescription(clazz.getDescription())
                                 .withSmallIcon(getCleanIconValue(clazz.getSmallIcon()))
                                 .withBigIcon(getCleanIconValue(clazz.getBigIcon()))
+                                .withResourceType(clazz.getResourceType())
                                 .build());
                     }
                 });

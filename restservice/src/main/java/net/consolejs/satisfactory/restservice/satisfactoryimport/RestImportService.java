@@ -10,6 +10,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import net.consolejs.satisfactory.repository.RepositoryFactory;
+import net.consolejs.satisfactory.repository.extractor.ExtractorRepository;
 import net.consolejs.satisfactory.repository.manufacturer.ManufacturerRepository;
 import net.consolejs.satisfactory.repository.recipe.RecipeRepository;
 import net.consolejs.satisfactory.repository.resource.ResourceRepository;
@@ -71,6 +72,7 @@ public class RestImportService {
             myRepositoryFactory.of(RecipeRepository.class).deleteByGameVersion(gameVersion);
             myRepositoryFactory.of(ResourceRepository.class).deleteByGameVersion(gameVersion);
             myRepositoryFactory.of(ManufacturerRepository.class).deleteByGameVersion(gameVersion);
+            myRepositoryFactory.of(ExtractorRepository.class).deleteByGameVersion(gameVersion);
         } catch (Exception exception) {
             LOGGER.log(Level.SEVERE, String.format("Import failed: \"%s\"", exception.getMessage()));
             return Response.status(Response.Status.BAD_REQUEST)

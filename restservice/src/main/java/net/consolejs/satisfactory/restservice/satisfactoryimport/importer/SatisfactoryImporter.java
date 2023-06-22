@@ -41,15 +41,18 @@ public class SatisfactoryImporter {
         Thread recipeImporter = new Thread(new RecipeImporter(myRepositoryFactory, classWrapperList, provider.getGameVersion()));
         Thread resourceImporter = new Thread(new ResourceImporter(myRepositoryFactory, classWrapperList, provider.getGameVersion()));
         Thread manufacturerImporter = new Thread(new ManufacturerImporter(myRepositoryFactory, classWrapperList, provider.getGameVersion()));
+        Thread extractorImporter = new Thread(new ExtractorImporter(myRepositoryFactory, classWrapperList, provider.getGameVersion()));
 
         imageResourceImporter.start();
         recipeImporter.start();
         resourceImporter.start();
         manufacturerImporter.start();
+        extractorImporter.start();
 
         imageResourceImporter.join();
         recipeImporter.join();
         resourceImporter.join();
         manufacturerImporter.join();
+        extractorImporter.join();
     }
 }

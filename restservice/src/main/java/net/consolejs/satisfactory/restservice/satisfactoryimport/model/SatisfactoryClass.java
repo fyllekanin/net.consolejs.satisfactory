@@ -1,6 +1,7 @@
 package net.consolejs.satisfactory.restservice.satisfactoryimport.model;
 
 import com.google.gson.annotations.SerializedName;
+import net.consolejs.satisfactory.entityview.satisfactory.ResourceType;
 
 import java.util.Objects;
 
@@ -23,6 +24,12 @@ public class SatisfactoryClass {
     private final String myBigIcon;
     @SerializedName("mProducedIn")
     private final String myProducedIn;
+    @SerializedName("mAllowedResourceForms")
+    private final String myAllowedResourceForms;
+    @SerializedName("mAllowedResources")
+    private final String myAllowedResources;
+    @SerializedName("mForm")
+    private final ResourceType myResourceType;
 
     private SatisfactoryClass(Builder builder) {
         myClassName = builder.myClassName;
@@ -34,6 +41,9 @@ public class SatisfactoryClass {
         mySmallIcon = builder.mySmallIcon;
         myBigIcon = builder.myBigIcon;
         myProducedIn = builder.myProducedIn;
+        myResourceType = builder.myResourceType;
+        myAllowedResourceForms = builder.myAllowedResourceForms;
+        myAllowedResources = builder.myAllowedResources;
     }
 
     public static Builder newBuilder() {
@@ -76,6 +86,18 @@ public class SatisfactoryClass {
         return myProducedIn;
     }
 
+    public ResourceType getResourceType() {
+        return myResourceType;
+    }
+
+    public String getAllowedResourceForms() {
+        return myAllowedResourceForms;
+    }
+
+    public String getAllowedResources() {
+        return myAllowedResources;
+    }
+
     public Builder newBuilderFromCurrent() {
         return new Builder(this);
     }
@@ -100,12 +122,28 @@ public class SatisfactoryClass {
                 Objects.equals(getDescription(), other.getDescription()) &&
                 Objects.equals(getSmallIcon(), other.getSmallIcon()) &&
                 Objects.equals(getBigIcon(), other.getBigIcon()) &&
-                Objects.equals(getProducedIn(), other.getProducedIn());
+                Objects.equals(getProducedIn(), other.getProducedIn()) &&
+                Objects.equals(getResourceType(), other.getResourceType()) &&
+                Objects.equals(getAllowedResourceForms(), other.getAllowedResourceForms()) &&
+                Objects.equals(getAllowedResources(), other.equals(getAllowedResources()));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(myClassName, myFullName, myDisplayName, myIngredients, myManufactoringDuration, myDescription, mySmallIcon, myBigIcon, myProducedIn);
+        return Objects.hash(
+                myClassName,
+                myFullName,
+                myDisplayName,
+                myIngredients,
+                myManufactoringDuration,
+                myDescription,
+                mySmallIcon,
+                myBigIcon,
+                myProducedIn,
+                myResourceType,
+                myAllowedResourceForms,
+                myAllowedResources
+        );
     }
 
     public static class Builder {
@@ -118,6 +156,9 @@ public class SatisfactoryClass {
         private String mySmallIcon;
         private String myBigIcon;
         private String myProducedIn;
+        private ResourceType myResourceType;
+        private String myAllowedResourceForms;
+        private String myAllowedResources;
 
         private Builder() {
         }
@@ -132,6 +173,9 @@ public class SatisfactoryClass {
             mySmallIcon = original.mySmallIcon;
             myBigIcon = original.myBigIcon;
             myProducedIn = original.myProducedIn;
+            myResourceType = original.myResourceType;
+            myAllowedResourceForms = original.myAllowedResourceForms;
+            myAllowedResources = original.myAllowedResources;
         }
 
         public Builder withClassName(String className) {
@@ -176,6 +220,21 @@ public class SatisfactoryClass {
 
         public Builder withProducedIn(String producedIn) {
             myProducedIn = producedIn;
+            return this;
+        }
+
+        public Builder withResourceType(ResourceType resourceType) {
+            myResourceType = resourceType;
+            return this;
+        }
+
+        public Builder withAllowedResourceForms(String allowedResourceForms) {
+            myAllowedResourceForms = allowedResourceForms;
+            return this;
+        }
+
+        public Builder withAllowedResources(String allowedResources) {
+            myAllowedResources = allowedResources;
             return this;
         }
 
