@@ -4,6 +4,7 @@ import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import net.consolejs.satisfactory.repository.manufacturer.ManufacturerRepository;
 import net.consolejs.satisfactory.repository.recipe.RecipeRepository;
 import net.consolejs.satisfactory.repository.resource.ResourceRepository;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -45,6 +46,9 @@ public class RepositoryFactory {
         }
         if (clazz.equals(ResourceRepository.class)) {
             return (T) new ResourceRepository(myDatabase);
+        }
+        if (clazz.equals(ManufacturerRepository.class)) {
+            return (T) new ManufacturerRepository(myDatabase);
         }
         return null;
     }

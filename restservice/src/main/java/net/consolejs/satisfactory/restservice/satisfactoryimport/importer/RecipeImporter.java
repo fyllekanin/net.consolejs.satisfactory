@@ -9,6 +9,7 @@ import net.consolejs.satisfactory.restservice.satisfactoryimport.model.Satisfact
 import net.consolejs.satisfactory.restservice.satisfactoryimport.model.SatisfactoryClassWrapper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -16,6 +17,7 @@ import java.util.regex.Pattern;
 
 public class RecipeImporter implements Runnable {
     private static final Pattern RECIPE_PATTERN = Pattern.compile("BlueprintGeneratedClass'\"/Game/FactoryGame/Resource/Parts/[^/]+/[a-zA-Z_]+.([^\"]+)\"',Amount=(\\d+)");
+    private static final Pattern PRODUCED_IN_FACTORY = Pattern.compile("/Game/FactoryGame/Buildable/Factory/");
     private final RepositoryFactory myRepositoryFactory;
     private final List<SatisfactoryClassWrapper> myClassWrappers;
     private final String myGameVersion;
@@ -40,9 +42,24 @@ public class RecipeImporter implements Runnable {
                                 .withDisplayName(clazz.getDisplayName())
                                 .withIngredients(getRecipeIngredients(clazz))
                                 .withDuration(clazz.getManufactoringDuration())
+                                .withProducedIn(getProducedIn(clazz))
                                 .build());
                     }
                 });
+    }
+
+    private String getProducedIn(SatisfactoryClass satisfactoryClass) {
+        if (satisfactoryClass.getProducedIn() == null) {
+            return null;
+        }
+        String[] parts = satisfactoryClass.getProducedIn()
+                .replace("(", "")
+                .replace(")", "")
+                .split(",");
+        return Arrays.stream(parts)
+                .filter(part -> PRODUCED_IN_FACTORY.matcher(part).find())
+                .findFirst()
+                .orElse(null);
     }
 
     private List<RecipeIngredient> getRecipeIngredients(SatisfactoryClass satisfactoryClass) {

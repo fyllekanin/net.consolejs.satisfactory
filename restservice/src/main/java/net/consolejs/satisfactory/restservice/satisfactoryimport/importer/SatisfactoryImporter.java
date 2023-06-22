@@ -2,12 +2,14 @@ package net.consolejs.satisfactory.restservice.satisfactoryimport.importer;
 
 import net.consolejs.satisfactory.repository.RepositoryFactory;
 import net.consolejs.satisfactory.repository.recipe.RecipeRepository;
+import net.consolejs.satisfactory.restservice.satisfactoryimport.model.SatisfactoryClassWrapper;
 import net.consolejs.satisfactory.restservice.satisfactoryimport.model.SatisfactoryImport;
 import net.consolejs.satisfactory.restservice.satisfactoryimport.provider.SatisfactoryImportProvider;
 import net.consolejs.satisfactory.service.file.FileService;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 
 import java.io.IOException;
+import java.util.List;
 
 public class SatisfactoryImporter {
     private final FileService myFileService;
@@ -33,16 +35,21 @@ public class SatisfactoryImporter {
         SatisfactoryImportProvider provider = new SatisfactoryImportProvider(formParams);
 
         SatisfactoryImport satisfactoryImport = provider.getSatisfactoryImport();
+
+        List<SatisfactoryClassWrapper> classWrapperList = provider.getSatisfactoryClassWrappers(satisfactoryImport);
         Thread imageResourceImporter = new Thread(new ImageResourceImporter(myFileService, satisfactoryImport, provider.getGameVersion()));
-        Thread recipeImporter = new Thread(new RecipeImporter(myRepositoryFactory, provider.getSatisfactoryClassWrappers(satisfactoryImport), provider.getGameVersion()));
-        Thread resourceImporter = new Thread(new ResourceImporter(myRepositoryFactory, provider.getSatisfactoryClassWrappers(satisfactoryImport), provider.getGameVersion()));
+        Thread recipeImporter = new Thread(new RecipeImporter(myRepositoryFactory, classWrapperList, provider.getGameVersion()));
+        Thread resourceImporter = new Thread(new ResourceImporter(myRepositoryFactory, classWrapperList, provider.getGameVersion()));
+        Thread manufacturerImporter = new Thread(new ManufacturerImporter(myRepositoryFactory, classWrapperList, provider.getGameVersion()));
 
         imageResourceImporter.start();
         recipeImporter.start();
         resourceImporter.start();
+        manufacturerImporter.start();
 
         imageResourceImporter.join();
         recipeImporter.join();
         resourceImporter.join();
+        manufacturerImporter.join();
     }
 }

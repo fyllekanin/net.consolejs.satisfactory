@@ -1,10 +1,10 @@
-package net.consolejs.satisfactory.entityview.document.resource;
+package net.consolejs.satisfactory.entityview.document.manufacturer;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Objects;
 
-public class ResourceDocument {
+public class ManufacturerDocument {
     @SerializedName("gameVersion")
     private final String myGameVersion;
     @SerializedName("className")
@@ -18,7 +18,7 @@ public class ResourceDocument {
     @SerializedName("bigIcon")
     private final String myBigIcon;
 
-    private ResourceDocument(Builder builder) {
+    private ManufacturerDocument(Builder builder) {
         myGameVersion = builder.myGameVersion;
         myClassName = builder.myClassName;
         myDisplayName = builder.myDisplayName;
@@ -63,7 +63,7 @@ public class ResourceDocument {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        ResourceDocument other = (ResourceDocument) o;
+        ManufacturerDocument other = (ManufacturerDocument) o;
         return Objects.equals(myGameVersion, other.myGameVersion) &&
                 Objects.equals(myClassName, other.myClassName) &&
                 Objects.equals(myDisplayName, other.myDisplayName) &&
@@ -126,8 +126,8 @@ public class ResourceDocument {
             return this;
         }
 
-        public ResourceDocument build() {
-            return new ResourceDocument(this);
+        public ManufacturerDocument build() {
+            return new ManufacturerDocument(this);
         }
     }
 }

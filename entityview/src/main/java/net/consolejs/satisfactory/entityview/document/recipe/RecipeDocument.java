@@ -18,6 +18,8 @@ public class RecipeDocument {
     private final List<RecipeIngredient> myIngredients;
     @SerializedName("duration")
     private final float myDuration;
+    @SerializedName("producedIn")
+    private final String myProducedIn;
 
     private RecipeDocument(Builder builder) {
         myGameVersion = builder.myGameVersion;
@@ -26,6 +28,11 @@ public class RecipeDocument {
         myDisplayName = builder.myDisplayName;
         myIngredients = builder.myIngredients;
         myDuration = builder.myDuration;
+        myProducedIn = builder.myProducedIn;
+    }
+
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     public String getGameVersion() {
@@ -52,8 +59,39 @@ public class RecipeDocument {
         return myIngredients;
     }
 
-    public static Builder newBuilder() {
-        return new Builder();
+    public String getProducedIn() {
+        return myProducedIn;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        RecipeDocument other = (RecipeDocument) o;
+        return Objects.equals(myGameVersion, other.myGameVersion) &&
+                Objects.equals(myClassName, other.myClassName) &&
+                Objects.equals(myFullName, other.myFullName) &&
+                Objects.equals(myDisplayName, other.myDisplayName) &&
+                Objects.equals(myIngredients, other.myIngredients) &&
+                Objects.equals(myDuration, other.myDuration) &&
+                Objects.equals(myProducedIn, other.myProducedIn);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                myGameVersion,
+                myClassName,
+                myFullName,
+                myDisplayName,
+                myIngredients,
+                myDuration,
+                myProducedIn
+        );
     }
 
     public static class Builder {
@@ -63,6 +101,7 @@ public class RecipeDocument {
         private String myDisplayName;
         private List<RecipeIngredient> myIngredients;
         private float myDuration;
+        private String myProducedIn;
 
         private Builder() {
             // Empty
@@ -98,37 +137,13 @@ public class RecipeDocument {
             return this;
         }
 
+        public Builder withProducedIn(String producedIn) {
+            myProducedIn = producedIn;
+            return this;
+        }
+
         public RecipeDocument build() {
             return new RecipeDocument(this);
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        RecipeDocument other = (RecipeDocument) o;
-        return Objects.equals(myGameVersion, other.myGameVersion) &&
-                Objects.equals(myClassName, other.myClassName) &&
-                Objects.equals(myFullName, other.myFullName) &&
-                Objects.equals(myDisplayName, other.myDisplayName) &&
-                Objects.equals(myIngredients, other.myIngredients) &&
-                Objects.equals(myDuration, other.myDuration);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(
-                myGameVersion,
-                myClassName,
-                myFullName,
-                myDisplayName,
-                myIngredients,
-                myDuration
-        );
     }
 }

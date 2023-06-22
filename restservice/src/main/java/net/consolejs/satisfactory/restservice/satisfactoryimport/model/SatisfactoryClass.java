@@ -21,6 +21,8 @@ public class SatisfactoryClass {
     private final String mySmallIcon;
     @SerializedName("mPersistentBigIcon")
     private final String myBigIcon;
+    @SerializedName("mProducedIn")
+    private final String myProducedIn;
 
     private SatisfactoryClass(Builder builder) {
         myClassName = builder.myClassName;
@@ -31,6 +33,7 @@ public class SatisfactoryClass {
         myDescription = builder.myDescription;
         mySmallIcon = builder.mySmallIcon;
         myBigIcon = builder.myBigIcon;
+        myProducedIn = builder.myProducedIn;
     }
 
     public static Builder newBuilder() {
@@ -69,6 +72,10 @@ public class SatisfactoryClass {
         return myBigIcon;
     }
 
+    public String getProducedIn() {
+        return myProducedIn;
+    }
+
     public Builder newBuilderFromCurrent() {
         return new Builder(this);
     }
@@ -92,12 +99,13 @@ public class SatisfactoryClass {
                 Objects.equals(getManufactoringDuration(), other.getManufactoringDuration()) &&
                 Objects.equals(getDescription(), other.getDescription()) &&
                 Objects.equals(getSmallIcon(), other.getSmallIcon()) &&
-                Objects.equals(getBigIcon(), other.getBigIcon());
+                Objects.equals(getBigIcon(), other.getBigIcon()) &&
+                Objects.equals(getProducedIn(), other.getProducedIn());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(myClassName, myFullName, myDisplayName, myIngredients, myManufactoringDuration, myDescription, mySmallIcon, myBigIcon);
+        return Objects.hash(myClassName, myFullName, myDisplayName, myIngredients, myManufactoringDuration, myDescription, mySmallIcon, myBigIcon, myProducedIn);
     }
 
     public static class Builder {
@@ -109,6 +117,7 @@ public class SatisfactoryClass {
         private String myDescription;
         private String mySmallIcon;
         private String myBigIcon;
+        private String myProducedIn;
 
         private Builder() {
         }
@@ -122,6 +131,7 @@ public class SatisfactoryClass {
             myDescription = original.myDescription;
             mySmallIcon = original.mySmallIcon;
             myBigIcon = original.myBigIcon;
+            myProducedIn = original.myProducedIn;
         }
 
         public Builder withClassName(String className) {
@@ -161,6 +171,11 @@ public class SatisfactoryClass {
 
         public Builder withBigIcon(String bigIcon) {
             myBigIcon = bigIcon;
+            return this;
+        }
+
+        public Builder withProducedIn(String producedIn) {
+            myProducedIn = producedIn;
             return this;
         }
 
