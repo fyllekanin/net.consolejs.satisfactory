@@ -12,12 +12,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RecipeImporter implements Runnable {
     private static final Pattern RECIPE_PATTERN = Pattern.compile("BlueprintGeneratedClass'\"/Game/FactoryGame/Resource/Parts/[^/]+/[a-zA-Z_]+.([^\"]+)\"',Amount=(\\d+)");
-    private static final Pattern PRODUCED_IN_FACTORY = Pattern.compile("/Game/FactoryGame/Buildable/Factory/");
+    private static final Pattern PRODUCED_IN_TO_CLASS_NAME = Pattern.compile(".*/(.*\\\\.(.*_C))");
+    private static final String PRODUCED_IN_START = "/Game/FactoryGame/Buildable/Factory/";
     private final RepositoryFactory myRepositoryFactory;
     private final List<SatisfactoryClassWrapper> myClassWrappers;
     private final String myGameVersion;
@@ -57,7 +59,11 @@ public class RecipeImporter implements Runnable {
                 .replace(")", "")
                 .split(",");
         return Arrays.stream(parts)
-                .filter(part -> PRODUCED_IN_FACTORY.matcher(part).find())
+                .filter(part -> part.startsWith(PRODUCED_IN_START))
+                .map(part -> part.split("\\."))
+                .filter(items -> items.length > 1)
+                .map(items -> items[1])
+                .filter(Objects::nonNull)
                 .findFirst()
                 .orElse(null);
     }

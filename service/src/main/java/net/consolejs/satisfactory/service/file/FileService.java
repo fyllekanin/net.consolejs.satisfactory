@@ -37,13 +37,13 @@ public class FileService {
     }
 
     public void writeFile(String path, byte[] bytes) {
-        LOGGER.log(Level.INFO, String.format("Starting to write file: \"%s\"", path));
+        LOGGER.log(Level.FINE, String.format("Starting to write file: \"%s\"", path));
         String directoryPath = String.format("%s/%s", myRootPath, getDirectoryPath(path));
         try {
             Files.createDirectories(Paths.get(directoryPath));
             File file = new File(String.format("%s/%s", myRootPath, path));
             if (file.exists()) {
-                LOGGER.log(Level.INFO, String.format("File already exists: \"%s\"", path));
+                LOGGER.log(Level.FINE, String.format("File already exists: \"%s\"", path));
                 return;
             }
 
@@ -51,7 +51,7 @@ public class FileService {
             outputStream.write(bytes);
             outputStream.close();
 
-            LOGGER.log(Level.INFO, String.format("Finished to write file: \"%s\"", path));
+            LOGGER.log(Level.FINE, String.format("Finished to write file: \"%s\"", path));
         } catch (IOException exception) {
             LOGGER.log(Level.SEVERE, String.format("Failed to write file: \"%s\", because: %s", path, exception.getMessage()));
         }
