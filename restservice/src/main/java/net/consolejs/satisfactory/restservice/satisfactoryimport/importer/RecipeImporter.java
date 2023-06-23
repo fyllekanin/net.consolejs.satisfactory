@@ -2,7 +2,9 @@ package net.consolejs.satisfactory.restservice.satisfactoryimport.importer;
 
 import net.consolejs.satisfactory.entityview.document.recipe.RecipeDocument;
 import net.consolejs.satisfactory.entityview.document.recipe.RecipeIngredient;
+import net.consolejs.satisfactory.entityview.document.recipe.RecipeProduct;
 import net.consolejs.satisfactory.entityview.satisfactory.NativeClass;
+import net.consolejs.satisfactory.entityview.satisfactory.ResourceType;
 import net.consolejs.satisfactory.repository.RepositoryFactory;
 import net.consolejs.satisfactory.repository.recipe.RecipeRepository;
 import net.consolejs.satisfactory.restservice.satisfactoryimport.model.SatisfactoryClass;
@@ -17,9 +19,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class RecipeImporter implements Runnable {
-    private static final Pattern RECIPE_PATTERN = Pattern.compile("BlueprintGeneratedClass'\"/Game/FactoryGame/Resource/Parts/[^/]+/[a-zA-Z_]+.([^\"]+)\"',Amount=(\\d+)");
-    private static final Pattern PRODUCED_IN_TO_CLASS_NAME = Pattern.compile(".*/(.*\\\\.(.*_C))");
+    private static final Pattern PART_RECIPE_PATTERN = Pattern.compile("BlueprintGeneratedClass'\"/Game/FactoryGame/Resource/Parts/[^/]+/[a-zA-Z_]+.([^\"]+)\"',Amount=(\\d+)");
+    private static final Pattern RESOURCE_RECIPE_PATTERN = Pattern.compile("BlueprintGeneratedClass'\"/Game/FactoryGame/Resource/RawResources/[^/]+/[a-zA-Z_]+.([^\"]+)\"',Amount=(\\d+)");
     private static final String PRODUCED_IN_START = "/Game/FactoryGame/Buildable/Factory/";
+    private static final String IS_ALTERNATE_START = "Alternate: ";
     private final RepositoryFactory myRepositoryFactory;
     private final List<SatisfactoryClassWrapper> myClassWrappers;
     private final String myGameVersion;
@@ -45,9 +48,25 @@ public class RecipeImporter implements Runnable {
                                 .withIngredients(getRecipeIngredients(clazz))
                                 .withDuration(clazz.getManufactoringDuration())
                                 .withProducedIn(getProducedIn(clazz))
+                                .isAlternate(isAlternate(clazz))
+                                .withProducts(getRecipeProducts(clazz))
                                 .build());
                     }
                 });
+    }
+
+    private List<RecipeProduct> getRecipeProducts(SatisfactoryClass satisfactoryClass) {
+        if (satisfactoryClass.getProduct() == null) {
+            return Collections.emptyList();
+        }
+        List<RecipeProduct> products = new ArrayList<>();
+        products.addAll(getProductFor(satisfactoryClass, true));
+        products.addAll(getProductFor(satisfactoryClass, false));
+        return products;
+    }
+
+    private boolean isAlternate(SatisfactoryClass satisfactoryClass) {
+        return satisfactoryClass.getDisplayName().startsWith(IS_ALTERNATE_START);
     }
 
     private String getProducedIn(SatisfactoryClass satisfactoryClass) {
@@ -72,14 +91,81 @@ public class RecipeImporter implements Runnable {
         if (satisfactoryClass.getIngredients() == null) {
             return Collections.emptyList();
         }
-        Matcher matcher = RECIPE_PATTERN.matcher(satisfactoryClass.getIngredients());
         List<RecipeIngredient> ingredients = new ArrayList<>();
-        while (matcher.find()) {
+        ingredients.addAll(getIngredientsFor(satisfactoryClass, true));
+        ingredients.addAll(getIngredientsFor(satisfactoryClass, false));
+        return ingredients;
+    }
+
+    private List<RecipeProduct> getProductFor(SatisfactoryClass satisfactoryClass, boolean isPart) {
+        List<RecipeProduct> products = new ArrayList<>();
+
+        Matcher partMatcher = (isPart ? PART_RECIPE_PATTERN : RESOURCE_RECIPE_PATTERN)
+                .matcher(satisfactoryClass.getProduct());
+        while (partMatcher.find()) {
+            products.add(RecipeProduct.newBuilder()
+                    .withDescriptorClassName(partMatcher.group(1))
+                    .withAmount(Integer.parseInt(partMatcher.group(2)))
+                    .isPart(isPart)
+                    .build());
+        }
+        return products;
+    }
+
+    private List<RecipeIngredient> getIngredientsFor(SatisfactoryClass satisfactoryClass, boolean isPart) {
+        List<RecipeIngredient> ingredients = new ArrayList<>();
+
+        Matcher partMatcher = (isPart ? PART_RECIPE_PATTERN : RESOURCE_RECIPE_PATTERN)
+                .matcher(satisfactoryClass.getIngredients());
+        while (partMatcher.find()) {
+            String className = getRecipeClassName(partMatcher.group(1), isPart);
+            if (className == null || satisfactoryClass.getClassName().equals(className)) {
+                continue;
+            }
             ingredients.add(RecipeIngredient.newBuilder()
-                    .withClassName(matcher.group(1))
-                    .withAmount(Integer.parseInt(matcher.group(2)))
+                    .withClassName(className)
+                    .withDescriptorClassName(partMatcher.group(1))
+                    .withAmount(Integer.parseInt(partMatcher.group(2)))
+                    .isPart(isPart)
+                    .withResourceType(getResourceType(partMatcher.group(1)))
                     .build());
         }
         return ingredients;
+    }
+
+    private ResourceType getResourceType(String descriptorClassName) {
+        return myClassWrappers.stream()
+                .filter(entry -> NativeClass.FGResourceDescriptor.equals(entry.getNativeClass()))
+                .flatMap(entry -> entry.getClasses().stream())
+                .filter(entry -> descriptorClassName.equals(entry.getClassName()))
+                .map(SatisfactoryClass::getResourceType)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private String getRecipeClassName(String descriptorClassName, boolean isPart) {
+        return myClassWrappers.stream()
+                .filter(entry -> NativeClass.FGRecipe.equals(entry.getNativeClass()))
+                .flatMap(entry -> entry.getClasses().stream())
+                .filter(entry -> isRecipeProducing(entry, descriptorClassName, isPart))
+                .filter(entry -> !isAlternate(entry))
+                .map(SatisfactoryClass::getClassName)
+                .findFirst()
+                .orElse(null);
+    }
+
+    private boolean isRecipeProducing(SatisfactoryClass satisfactoryClass, String descriptorClassName, boolean isPart) {
+        if (satisfactoryClass.getProduct() == null) {
+            return false;
+        }
+        Matcher matcher = (isPart ? PART_RECIPE_PATTERN : RESOURCE_RECIPE_PATTERN)
+                .matcher(satisfactoryClass.getProduct());
+        while (matcher.find()) {
+            if (descriptorClassName.equals(matcher.group(1))) {
+                return true;
+            }
+        }
+        return false;
     }
 }

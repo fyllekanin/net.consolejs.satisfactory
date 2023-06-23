@@ -47,11 +47,11 @@ public class ExtractorRepository {
         }
     }
 
-    public ExtractorDocument getExtractorDocument(Document document) {
+    private ExtractorDocument getExtractorDocument(Document document) {
         return GSON.fromJson(GSON.toJson(document), ExtractorDocument.class);
     }
 
-    public Document getDocument(ExtractorDocument extractorDocument) {
+    private Document getDocument(ExtractorDocument extractorDocument) {
         return Document.parse(GSON.toJson(extractorDocument));
     }
 }

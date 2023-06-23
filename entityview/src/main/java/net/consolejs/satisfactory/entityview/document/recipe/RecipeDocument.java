@@ -20,6 +20,10 @@ public class RecipeDocument {
     private final float myDuration;
     @SerializedName("producedIn")
     private final String myProducedIn;
+    @SerializedName("isAlternate")
+    private final boolean myIsAlternate;
+    @SerializedName("products")
+    private final List<RecipeProduct> myProducts;
 
     private RecipeDocument(Builder builder) {
         myGameVersion = builder.myGameVersion;
@@ -29,6 +33,8 @@ public class RecipeDocument {
         myIngredients = builder.myIngredients;
         myDuration = builder.myDuration;
         myProducedIn = builder.myProducedIn;
+        myIsAlternate = builder.myIsAlternate;
+        myProducts = builder.myProducts;
     }
 
     public static Builder newBuilder() {
@@ -63,6 +69,14 @@ public class RecipeDocument {
         return myProducedIn;
     }
 
+    public boolean isAlternate() {
+        return myIsAlternate;
+    }
+
+    public List<RecipeProduct> getProducts() {
+        return myProducts;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -78,7 +92,9 @@ public class RecipeDocument {
                 Objects.equals(myDisplayName, other.myDisplayName) &&
                 Objects.equals(myIngredients, other.myIngredients) &&
                 Objects.equals(myDuration, other.myDuration) &&
-                Objects.equals(myProducedIn, other.myProducedIn);
+                Objects.equals(myProducedIn, other.myProducedIn) &&
+                Objects.equals(myIsAlternate, other.myIsAlternate) &&
+                Objects.equals(myProducts, other.myProducts);
     }
 
     @Override
@@ -90,7 +106,9 @@ public class RecipeDocument {
                 myDisplayName,
                 myIngredients,
                 myDuration,
-                myProducedIn
+                myProducedIn,
+                myIsAlternate,
+                myProducts
         );
     }
 
@@ -102,6 +120,8 @@ public class RecipeDocument {
         private List<RecipeIngredient> myIngredients;
         private float myDuration;
         private String myProducedIn;
+        private boolean myIsAlternate;
+        private List<RecipeProduct> myProducts;
 
         private Builder() {
             // Empty
@@ -139,6 +159,16 @@ public class RecipeDocument {
 
         public Builder withProducedIn(String producedIn) {
             myProducedIn = producedIn;
+            return this;
+        }
+
+        public Builder isAlternate(boolean isAlternate) {
+            myIsAlternate = isAlternate;
+            return this;
+        }
+
+        public Builder withProducts(List<RecipeProduct> products) {
+            myProducts = products;
             return this;
         }
 

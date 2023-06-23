@@ -30,13 +30,15 @@ public class SatisfactoryClass {
     private final String myAllowedResources;
     @SerializedName("mForm")
     private final ResourceType myResourceType;
+    @SerializedName("mProduct")
+    private final String myProduct;
 
     private SatisfactoryClass(Builder builder) {
         myClassName = builder.myClassName;
         myFullName = builder.myFullName;
         myDisplayName = builder.myDisplayName;
         myIngredients = builder.myIngredients;
-        myManufactoringDuration = builder.myManufactoringDuration;
+        myManufactoringDuration = builder.myManufacturingDuration;
         myDescription = builder.myDescription;
         mySmallIcon = builder.mySmallIcon;
         myBigIcon = builder.myBigIcon;
@@ -44,6 +46,7 @@ public class SatisfactoryClass {
         myResourceType = builder.myResourceType;
         myAllowedResourceForms = builder.myAllowedResourceForms;
         myAllowedResources = builder.myAllowedResources;
+        myProduct = builder.myProduct;
     }
 
     public static Builder newBuilder() {
@@ -98,6 +101,10 @@ public class SatisfactoryClass {
         return myAllowedResources;
     }
 
+    public String getProduct() {
+        return myProduct;
+    }
+
     public Builder newBuilderFromCurrent() {
         return new Builder(this);
     }
@@ -125,7 +132,8 @@ public class SatisfactoryClass {
                 Objects.equals(getProducedIn(), other.getProducedIn()) &&
                 Objects.equals(getResourceType(), other.getResourceType()) &&
                 Objects.equals(getAllowedResourceForms(), other.getAllowedResourceForms()) &&
-                Objects.equals(getAllowedResources(), other.equals(getAllowedResources()));
+                Objects.equals(getAllowedResources(), other.getAllowedResources()) &&
+                Objects.equals(getProduct(), other.getProduct());
     }
 
     @Override
@@ -142,7 +150,8 @@ public class SatisfactoryClass {
                 myProducedIn,
                 myResourceType,
                 myAllowedResourceForms,
-                myAllowedResources
+                myAllowedResources,
+                myProduct
         );
     }
 
@@ -151,7 +160,7 @@ public class SatisfactoryClass {
         private String myFullName;
         private String myDisplayName;
         private String myIngredients;
-        private float myManufactoringDuration;
+        private float myManufacturingDuration;
         private String myDescription;
         private String mySmallIcon;
         private String myBigIcon;
@@ -159,6 +168,7 @@ public class SatisfactoryClass {
         private ResourceType myResourceType;
         private String myAllowedResourceForms;
         private String myAllowedResources;
+        private String myProduct;
 
         private Builder() {
         }
@@ -168,7 +178,7 @@ public class SatisfactoryClass {
             myFullName = original.myFullName;
             myDisplayName = original.myDisplayName;
             myIngredients = original.myIngredients;
-            myManufactoringDuration = original.myManufactoringDuration;
+            myManufacturingDuration = original.myManufactoringDuration;
             myDescription = original.myDescription;
             mySmallIcon = original.mySmallIcon;
             myBigIcon = original.myBigIcon;
@@ -176,6 +186,7 @@ public class SatisfactoryClass {
             myResourceType = original.myResourceType;
             myAllowedResourceForms = original.myAllowedResourceForms;
             myAllowedResources = original.myAllowedResources;
+            myProduct = original.myProduct;
         }
 
         public Builder withClassName(String className) {
@@ -199,7 +210,7 @@ public class SatisfactoryClass {
         }
 
         public Builder withManufactoringDuration(float manufactoringDuration) {
-            myManufactoringDuration = manufactoringDuration;
+            myManufacturingDuration = manufactoringDuration;
             return this;
         }
 
@@ -235,6 +246,11 @@ public class SatisfactoryClass {
 
         public Builder withAllowedResources(String allowedResources) {
             myAllowedResources = allowedResources;
+            return this;
+        }
+
+        public Builder withProduct(String product) {
+            myProduct = product;
             return this;
         }
 

@@ -43,6 +43,9 @@ C:\Program Files\Epic Games\<version of the game>\FactoryGame\Content\Paks
 ``
 .\umodel.exe -path="C:\Program Files\Epic Games\<version of the game>\FactoryGame\Content\Paks" -out=".\out256" -png -export *256*.uasset -game="ue4.26"
 ``
+``
+.\umodel.exe -path="C:\Program Files\Epic Games\<version of the game>\FactoryGame\Content\Paks" -out=".\out256" -png -export *512*.uasset -game="ue4.26"
+``
 
 #### Making the import file
 

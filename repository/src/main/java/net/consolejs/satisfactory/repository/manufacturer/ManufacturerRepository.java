@@ -4,10 +4,12 @@ import com.google.gson.Gson;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
 import net.consolejs.satisfactory.entityview.document.manufacturer.ManufacturerDocument;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 import java.util.logging.Logger;
 
@@ -46,11 +48,18 @@ public class ManufacturerRepository {
         }
     }
 
-    public ManufacturerDocument getManufacturerDocument(Document document) {
+    public ManufacturerDocument findByClassName(String gameVersion, String className) {
+        Bson query = Filters.and(Filters.exists(GAME_VERSION), Filters.eq(GAME_VERSION, gameVersion),
+                Filters.exists(CLASS_NAME), Filters.eq(CLASS_NAME, className));
+        Document document = myCollection.find(query).first();
+        return document == null ? null : getManufacturerDocument(document);
+    }
+
+    private ManufacturerDocument getManufacturerDocument(Document document) {
         return GSON.fromJson(GSON.toJson(document), ManufacturerDocument.class);
     }
 
-    public Document getDocument(ManufacturerDocument manufacturerDocument) {
+    private Document getDocument(ManufacturerDocument manufacturerDocument) {
         return Document.parse(GSON.toJson(manufacturerDocument));
     }
 }

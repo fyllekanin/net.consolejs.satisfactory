@@ -46,11 +46,11 @@ public class ResourceRepository {
         }
     }
 
-    public ResourceDocument getResourceDocument(Document document) {
+    private ResourceDocument getResourceDocument(Document document) {
         return GSON.fromJson(GSON.toJson(document), ResourceDocument.class);
     }
 
-    public Document getDocument(ResourceDocument resourceDocument) {
+    private Document getDocument(ResourceDocument resourceDocument) {
         return Document.parse(GSON.toJson(resourceDocument));
     }
 }

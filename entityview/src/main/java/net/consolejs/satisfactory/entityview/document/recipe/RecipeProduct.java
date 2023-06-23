@@ -1,42 +1,33 @@
 package net.consolejs.satisfactory.entityview.document.recipe;
 
 import com.google.gson.annotations.SerializedName;
-import net.consolejs.satisfactory.entityview.satisfactory.ResourceType;
 
-public class RecipeIngredient {
-    @SerializedName("className")
-    private final String myClassName;
+import java.util.Objects;
+
+
+public class RecipeProduct {
     @SerializedName("descriptorClassName")
     private final String myDescriptorClassName;
     @SerializedName("amount")
-    private final int myAmount;
-
+    private final float myAmount;
     @SerializedName("isPart")
     private final boolean myIsPart;
-    @SerializedName("resourceType")
-    private final ResourceType myResourceType;
 
-    private RecipeIngredient(Builder builder) {
-        myClassName = builder.myClassName;
+    private RecipeProduct(Builder builder) {
         myDescriptorClassName = builder.myDescriptorClassName;
         myAmount = builder.myAmount;
         myIsPart = builder.myIsPart;
-        myResourceType = builder.myResourceType;
     }
 
     public static Builder newBuilder() {
         return new Builder();
     }
 
-    public String getClassName() {
-        return myClassName;
-    }
-
     public String getDescriptorClassName() {
         return myDescriptorClassName;
     }
 
-    public int getAmount() {
+    public float getAmount() {
         return myAmount;
     }
 
@@ -44,25 +35,27 @@ public class RecipeIngredient {
         return myIsPart;
     }
 
-    public ResourceType getResourceType() {
-        return myResourceType;
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof RecipeProduct other) {
+            return Objects.equals(myDescriptorClassName, other.myDescriptorClassName) &&
+                    Objects.equals(myAmount, other.myAmount) &&
+                    Objects.equals(myIsPart, other.myIsPart);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(myDescriptorClassName, myAmount);
     }
 
     public static class Builder {
-        private String myClassName;
         private String myDescriptorClassName;
-        private int myAmount;
+        private float myAmount;
         private boolean myIsPart;
-        private ResourceType myResourceType;
-
 
         private Builder() {
-            // Empty
-        }
-
-        public Builder withClassName(String className) {
-            myClassName = className;
-            return this;
         }
 
         public Builder withDescriptorClassName(String descriptorClassName) {
@@ -70,7 +63,7 @@ public class RecipeIngredient {
             return this;
         }
 
-        public Builder withAmount(int amount) {
+        public Builder withAmount(float amount) {
             myAmount = amount;
             return this;
         }
@@ -80,13 +73,8 @@ public class RecipeIngredient {
             return this;
         }
 
-        public Builder withResourceType(ResourceType resourceType) {
-            myResourceType = resourceType;
-            return this;
-        }
-
-        public RecipeIngredient build() {
-            return new RecipeIngredient(this);
+        public RecipeProduct build() {
+            return new RecipeProduct(this);
         }
     }
 }

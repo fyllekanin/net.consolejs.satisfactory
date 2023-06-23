@@ -54,11 +54,18 @@ public class RecipeRepository {
         }
     }
 
-    public RecipeDocument getRecipeDocument(Document document) {
+    public RecipeDocument findByClassName(String gameVersion, String className) {
+        Bson query = Filters.and(Filters.exists(GAME_VERSION), Filters.eq(GAME_VERSION, gameVersion),
+                Filters.exists(CLASS_NAME), Filters.eq(CLASS_NAME, className));
+        Document document = myCollection.find(query).first();
+        return document == null ? null : getRecipeDocument(document);
+    }
+
+    private RecipeDocument getRecipeDocument(Document document) {
         return GSON.fromJson(GSON.toJson(document), RecipeDocument.class);
     }
 
-    public Document getDocument(RecipeDocument recipeDocument) {
+    private Document getDocument(RecipeDocument recipeDocument) {
         return Document.parse(GSON.toJson(recipeDocument));
     }
 }
