@@ -1,7 +1,7 @@
 package net.consolejs.satisfactory.restservice.satisfactoryimport.importer;
 
 import net.consolejs.satisfactory.repository.RepositoryFactory;
-import net.consolejs.satisfactory.repository.recipe.RecipeRepository;
+import net.consolejs.satisfactory.repository.itemdescriptor.ItemDescriptorRepository;
 import net.consolejs.satisfactory.restservice.satisfactoryimport.model.SatisfactoryClassWrapper;
 import net.consolejs.satisfactory.restservice.satisfactoryimport.model.SatisfactoryImport;
 import net.consolejs.satisfactory.restservice.satisfactoryimport.provider.SatisfactoryImportProvider;
@@ -22,12 +22,12 @@ public class SatisfactoryImporter {
 
     public boolean isAlreadyImported(FormDataMultiPart formParams) {
         SatisfactoryImportProvider provider = new SatisfactoryImportProvider(formParams);
-        return myRepositoryFactory.of(RecipeRepository.class)
+        return myRepositoryFactory.of(ItemDescriptorRepository.class)
                 .isAnyRecipeForGameVersion(provider.getGameVersion());
     }
 
     public boolean isAlreadyImported(String gameVersion) {
-        return myRepositoryFactory.of(RecipeRepository.class)
+        return myRepositoryFactory.of(ItemDescriptorRepository.class)
                 .isAnyRecipeForGameVersion(gameVersion);
     }
 
@@ -38,21 +38,21 @@ public class SatisfactoryImporter {
 
         List<SatisfactoryClassWrapper> classWrapperList = provider.getSatisfactoryClassWrappers(satisfactoryImport);
         Thread imageResourceImporter = new Thread(new ImageResourceImporter(myFileService, satisfactoryImport, provider.getGameVersion()));
-        Thread recipeImporter = new Thread(new RecipeImporter(myRepositoryFactory, classWrapperList, provider.getGameVersion()));
         Thread resourceImporter = new Thread(new ResourceImporter(myRepositoryFactory, classWrapperList, provider.getGameVersion()));
         Thread manufacturerImporter = new Thread(new ManufacturerImporter(myRepositoryFactory, classWrapperList, provider.getGameVersion()));
         Thread extractorImporter = new Thread(new ExtractorImporter(myRepositoryFactory, classWrapperList, provider.getGameVersion()));
+        Thread itemDescriptorImporter = new Thread(new ItemDescriptorImporter(myRepositoryFactory, classWrapperList, provider.getGameVersion()));
 
         imageResourceImporter.start();
-        recipeImporter.start();
         resourceImporter.start();
         manufacturerImporter.start();
         extractorImporter.start();
+        itemDescriptorImporter.start();
 
         imageResourceImporter.join();
-        recipeImporter.join();
         resourceImporter.join();
         manufacturerImporter.join();
         extractorImporter.join();
+        itemDescriptorImporter.join();
     }
 }

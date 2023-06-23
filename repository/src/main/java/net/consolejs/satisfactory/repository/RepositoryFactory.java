@@ -5,8 +5,8 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import net.consolejs.satisfactory.repository.extractor.ExtractorRepository;
+import net.consolejs.satisfactory.repository.itemdescriptor.ItemDescriptorRepository;
 import net.consolejs.satisfactory.repository.manufacturer.ManufacturerRepository;
-import net.consolejs.satisfactory.repository.recipe.RecipeRepository;
 import net.consolejs.satisfactory.repository.resource.ResourceRepository;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -42,9 +42,6 @@ public class RepositoryFactory {
 
     @SuppressWarnings("unchecked")
     public <T> T of(Class<T> clazz) {
-        if (clazz.equals(RecipeRepository.class)) {
-            return (T) new RecipeRepository(myDatabase);
-        }
         if (clazz.equals(ResourceRepository.class)) {
             return (T) new ResourceRepository(myDatabase);
         }
@@ -53,6 +50,9 @@ public class RepositoryFactory {
         }
         if (clazz.equals(ExtractorRepository.class)) {
             return (T) new ExtractorRepository(myDatabase);
+        }
+        if (clazz.equals(ItemDescriptorRepository.class)) {
+            return (T) new ItemDescriptorRepository(myDatabase);
         }
         return null;
     }
