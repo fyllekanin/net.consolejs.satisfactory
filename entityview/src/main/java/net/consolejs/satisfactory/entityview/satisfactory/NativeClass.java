@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public enum NativeClass {
-
-
     @SerializedName("Class'/Script/FactoryGame.FGItemDescriptor'")
     FGItemDescriptor("Class'/Script/FactoryGame.FGItemDescriptor'"),
     @SerializedName("Class'/Script/FactoryGame.FGBuildableDroneStation'")
@@ -202,27 +200,29 @@ public enum NativeClass {
     @SerializedName("Class'/Script/FactoryGame.FGBuildablePassthrough'")
     FGBuildablePassthrough("Class'/Script/FactoryGame.FGBuildablePassthrough'");
 
-    private final String key;
-
     private static final Map<String, NativeClass> ENUM_MAP;
+
+    static {
+        Map<String, NativeClass> map = new ConcurrentHashMap<String, NativeClass>();
+        for (NativeClass instance : NativeClass.values()) {
+            map.put(instance
+                            .getKey()
+                            .toLowerCase(), instance);
+        }
+        ENUM_MAP = Collections.unmodifiableMap(map);
+    }
+
+    private final String key;
 
     NativeClass(String key) {
         this.key = key;
     }
 
-    public String getKey() {
-        return key;
-    }
-
-    static {
-        Map<String, NativeClass> map = new ConcurrentHashMap<String, NativeClass>();
-        for (NativeClass instance : NativeClass.values()) {
-            map.put(instance.getKey().toLowerCase(), instance);
-        }
-        ENUM_MAP = Collections.unmodifiableMap(map);
-    }
-
     public static NativeClass get(String name) {
         return ENUM_MAP.get(name.toLowerCase());
+    }
+
+    public String getKey() {
+        return key;
     }
 }

@@ -27,6 +27,7 @@
         <mokito.junit.version>4.5.1</mokito.junit.version>
         <maven.surefire.version>3.1.2</maven.surefire.version>
         <maven.compiler.version>3.8.1</maven.compiler.version>
+        <equalsverifier.version>3.14.3</equalsverifier.version>
     </properties>
 
     <dependencyManagement>
@@ -66,6 +67,13 @@
             <groupId>io.github.cdimascio</groupId>
             <artifactId>dotenv-java</artifactId>
             <version>${cdimascio.dotenv.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>nl.jqno.equalsverifier</groupId>
+            <artifactId>equalsverifier</artifactId>
+            <version>${equalsverifier.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
