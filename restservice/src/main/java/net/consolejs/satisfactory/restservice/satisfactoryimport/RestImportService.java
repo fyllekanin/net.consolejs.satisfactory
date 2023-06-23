@@ -11,8 +11,8 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import net.consolejs.satisfactory.repository.RepositoryFactory;
 import net.consolejs.satisfactory.repository.extractor.ExtractorRepository;
+import net.consolejs.satisfactory.repository.itemdescriptor.ItemDescriptorRepository;
 import net.consolejs.satisfactory.repository.manufacturer.ManufacturerRepository;
-import net.consolejs.satisfactory.repository.recipe.RecipeRepository;
 import net.consolejs.satisfactory.repository.resource.ResourceRepository;
 import net.consolejs.satisfactory.restservice.satisfactoryimport.importer.SatisfactoryImporter;
 import net.consolejs.satisfactory.service.file.FileService;
@@ -69,10 +69,10 @@ public class RestImportService {
             }
 
             myFileService.deleteDirectory(gameVersion);
-            myRepositoryFactory.of(RecipeRepository.class).deleteByGameVersion(gameVersion);
             myRepositoryFactory.of(ResourceRepository.class).deleteByGameVersion(gameVersion);
             myRepositoryFactory.of(ManufacturerRepository.class).deleteByGameVersion(gameVersion);
             myRepositoryFactory.of(ExtractorRepository.class).deleteByGameVersion(gameVersion);
+            myRepositoryFactory.of(ItemDescriptorRepository.class).deleteByGameVersion(gameVersion);
         } catch (Exception exception) {
             LOGGER.log(Level.SEVERE, String.format("Import failed: \"%s\"", exception.getMessage()));
             return Response.status(Response.Status.BAD_REQUEST)
