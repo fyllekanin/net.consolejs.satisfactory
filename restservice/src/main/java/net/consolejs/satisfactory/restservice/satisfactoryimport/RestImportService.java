@@ -21,7 +21,7 @@ import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Path("/v1/import")
+@Path("/api/v1/import")
 public class RestImportService {
     private static final Logger LOGGER = Logger.getLogger(RestImportService.class.getName());
     @Inject

@@ -15,7 +15,7 @@ import net.consolejs.satisfactory.restservice.planner.provider.PlannerProvider;
 
 import java.util.logging.Logger;
 
-@Path("/v1/planner")
+@Path("/api/v1/planner")
 public class RestPlannerService {
     private static final Logger LOGGER = Logger.getLogger(RestPlannerService.class.getName());
     @Inject
