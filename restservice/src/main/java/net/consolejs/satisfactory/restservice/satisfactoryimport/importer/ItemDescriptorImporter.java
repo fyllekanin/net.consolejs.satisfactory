@@ -22,6 +22,9 @@ public class ItemDescriptorImporter implements Runnable {
                                                                                   "(\\w+)\\\"',Amount=([0-9]+)");
     private static final Pattern PRODUCED_IN_PATTERN = Pattern.compile("/Game/FactoryGame/Buildable/Factory/\\w+/\\w+" +
                                                                                ".(\\w+)");
+    private static final List<String> IGNORED_ITEMS = List.of("Desc_UraniumCell_C", "Desc_UraniumPellet_C",
+                                                              "Desc_CompactedCoal_C", "Desc_PackagedOil_C",
+                                                              "Desc_PackagedWater_C");
     private static final String RAW_RESOURCES = "RawResources";
     private static final String ALTERNATE_RECIPE_PREFIX = "Alternate: ";
     private final RepositoryFactory myRepositoryFactory;
@@ -43,6 +46,7 @@ public class ItemDescriptorImporter implements Runnable {
                 .flatMap(entry -> entry
                         .getClasses()
                         .stream())
+                .filter(entry -> !IGNORED_ITEMS.contains(entry.getClassName()))
                 .forEach(satisfactoryClass -> repository.create(ItemDescriptorDocument
                                                                         .newBuilder()
                                                                         .withGameVersion(myGameVersion)
