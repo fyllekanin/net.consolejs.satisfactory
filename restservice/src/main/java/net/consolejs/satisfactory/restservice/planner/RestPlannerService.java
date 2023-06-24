@@ -15,7 +15,7 @@ import net.consolejs.satisfactory.restservice.planner.provider.PlannerProvider;
 
 import java.util.logging.Logger;
 
-@Path("/api/v1/planner")
+@Path("/v1/planner")
 public class RestPlannerService {
     private static final Logger LOGGER = Logger.getLogger(RestPlannerService.class.getName());
     @Inject
@@ -32,10 +32,12 @@ public class RestPlannerService {
     @Path("/{gameVersion}/{recipeClassName}/{amount}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPlanning(@PathParam("gameVersion") String gameVersion,
-                                @PathParam("recipeClassName") String recipeClassName, @PathParam("amount") float amount) {
+                                @PathParam("recipeClassName") String recipeClassName,
+                                @PathParam("amount") float amount) {
         PlannerStep solution = myPlannerProvider.getSolution(gameVersion, recipeClassName, amount);
 
-        return Response.status(Response.Status.OK)
+        return Response
+                .status(Response.Status.OK)
                 .entity(new Gson().toJson(solution, PlannerStep.class))
                 .build();
     }

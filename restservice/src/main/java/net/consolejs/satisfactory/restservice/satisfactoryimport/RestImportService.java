@@ -21,7 +21,7 @@ import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Path("/api/v1")
+@Path("/v1/import")
 public class RestImportService {
     private static final Logger LOGGER = Logger.getLogger(RestImportService.class.getName());
     @Inject
@@ -37,50 +37,66 @@ public class RestImportService {
     }
 
     @POST
-    @Path("/import")
+    @Path("/")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response satisfactoryImportCreate(FormDataMultiPart formParams) {
         try {
             if (mySatisfactoryImporter.isAlreadyImported(formParams)) {
-                return Response.status(Response.Status.CONFLICT)
+                return Response
+                        .status(Response.Status.CONFLICT)
                         .entity("The provided gameVersion is already imported")
                         .build();
             }
             mySatisfactoryImporter.run(formParams);
         } catch (Exception exception) {
             LOGGER.log(Level.SEVERE, String.format("Import failed: \"%s\"", exception.getMessage()));
-            return Response.status(Response.Status.BAD_REQUEST)
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
                     .entity("Import failed")
                     .build();
         }
 
-        return Response.status(Response.Status.OK).build();
+        return Response
+                .status(Response.Status.OK)
+                .build();
     }
 
     @DELETE
-    @Path("/import/{gameVersion}")
+    @Path("/{gameVersion}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response satisfactoryImportDelete(@PathParam("gameVersion") String gameVersion) {
         try {
             if (!mySatisfactoryImporter.isAlreadyImported(gameVersion)) {
-                return Response.status(Response.Status.NOT_FOUND)
+                return Response
+                        .status(Response.Status.NOT_FOUND)
                         .entity("The provided gameVersion is not imported")
                         .build();
             }
 
             myFileService.deleteDirectory(gameVersion);
-            myRepositoryFactory.of(ResourceRepository.class).deleteByGameVersion(gameVersion);
-            myRepositoryFactory.of(ManufacturerRepository.class).deleteByGameVersion(gameVersion);
-            myRepositoryFactory.of(ExtractorRepository.class).deleteByGameVersion(gameVersion);
-            myRepositoryFactory.of(ItemDescriptorRepository.class).deleteByGameVersion(gameVersion);
+            myRepositoryFactory
+                    .of(ResourceRepository.class)
+                    .deleteByGameVersion(gameVersion);
+            myRepositoryFactory
+                    .of(ManufacturerRepository.class)
+                    .deleteByGameVersion(gameVersion);
+            myRepositoryFactory
+                    .of(ExtractorRepository.class)
+                    .deleteByGameVersion(gameVersion);
+            myRepositoryFactory
+                    .of(ItemDescriptorRepository.class)
+                    .deleteByGameVersion(gameVersion);
         } catch (Exception exception) {
             LOGGER.log(Level.SEVERE, String.format("Import failed: \"%s\"", exception.getMessage()));
-            return Response.status(Response.Status.BAD_REQUEST)
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
                     .entity("Import failed")
                     .build();
         }
 
-        return Response.status(Response.Status.OK).build();
+        return Response
+                .status(Response.Status.OK)
+                .build();
     }
 }
 

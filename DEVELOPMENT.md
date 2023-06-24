@@ -20,6 +20,15 @@ a mongodb server with:
 admin interface reachable at:
 [http://localhost:8081](http://localhost:8081)
 
+### Resources
+
+Resources are served based on the SATISFACTORY_RESOURCE_PATH environment variable.
+After a successful import you can visit the follow link as an example to get
+the resource.
+
+localhost:8000/resources/**{gameVersion}**
+/Game/FactoryGame/Buildable/Factory/AssemblerMk1/UI/IconDesc_AssemblerMk1_256.png
+
 ### Satisfactory files
 
 There is x2 files from Satisfactory needed when doing the import.
