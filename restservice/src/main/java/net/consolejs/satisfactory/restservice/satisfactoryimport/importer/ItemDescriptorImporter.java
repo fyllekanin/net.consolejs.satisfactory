@@ -17,15 +17,19 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ItemDescriptorImporter implements Runnable {
-    private static final Pattern RECIPE_PRODUCT_PATTERN = Pattern.compile("/(Parts|RawResources).*\\.([a-zA-Z_]+_C).*Amount=([0-9]+)");
-    private static final Pattern PRODUCED_IN_PATTERN = Pattern.compile("/Game/FactoryGame/Buildable/Factory/\\w+/\\w+.(\\w+)");
+    private static final Pattern RECIPE_PRODUCT_PATTERN = Pattern.compile("/Game/FactoryGame/Resource/" +
+                                                                                  "(Parts|RawResources)/\\w+/\\w+." +
+                                                                                  "(\\w+)\\\"',Amount=([0-9]+)");
+    private static final Pattern PRODUCED_IN_PATTERN = Pattern.compile("/Game/FactoryGame/Buildable/Factory/\\w+/\\w+" +
+                                                                               ".(\\w+)");
     private static final String RAW_RESOURCES = "RawResources";
     private static final String ALTERNATE_RECIPE_PREFIX = "Alternate: ";
     private final RepositoryFactory myRepositoryFactory;
     private final List<SatisfactoryClassWrapper> myClassWrappers;
     private final String myGameVersion;
 
-    public ItemDescriptorImporter(RepositoryFactory repositoryFactory, List<SatisfactoryClassWrapper> classWrappers, String gameVersion) {
+    public ItemDescriptorImporter(RepositoryFactory repositoryFactory, List<SatisfactoryClassWrapper> classWrappers,
+                                  String gameVersion) {
         myRepositoryFactory = repositoryFactory;
         myClassWrappers = classWrappers;
         myGameVersion = gameVersion;
@@ -33,26 +37,34 @@ public class ItemDescriptorImporter implements Runnable {
 
     public void run() {
         ItemDescriptorRepository repository = myRepositoryFactory.of(ItemDescriptorRepository.class);
-        myClassWrappers.stream()
+        myClassWrappers
+                .stream()
                 .filter(entry -> NativeClass.FGItemDescriptor.equals(entry.getNativeClass()))
-                .flatMap(entry -> entry.getClasses().stream())
-                .forEach(satisfactoryClass -> repository.create(ItemDescriptorDocument.newBuilder()
-                        .withGameVersion(myGameVersion)
-                        .withClassName(satisfactoryClass.getClassName())
-                        .withDisplayName(satisfactoryClass.getDisplayName())
-                        .withDescription(satisfactoryClass.getDescription())
-                        .withSmallIcon(getCleanIconValue(satisfactoryClass.getSmallIcon()))
-                        .withBigIcon(getCleanIconValue(satisfactoryClass.getBigIcon()))
-                        .withResourceType(satisfactoryClass.getResourceType())
-                        .withRecipes(getRecipes(satisfactoryClass))
-                        .build()));
+                .flatMap(entry -> entry
+                        .getClasses()
+                        .stream())
+                .forEach(satisfactoryClass -> repository.create(ItemDescriptorDocument
+                                                                        .newBuilder()
+                                                                        .withGameVersion(myGameVersion)
+                                                                        .withClassName(satisfactoryClass.getClassName())
+                                                                        .withDisplayName(satisfactoryClass.getDisplayName())
+                                                                        .withDescription(satisfactoryClass.getDescription())
+                                                                        .withSmallIcon(getCleanIconValue(satisfactoryClass.getSmallIcon()))
+                                                                        .withBigIcon(getCleanIconValue(satisfactoryClass.getBigIcon()))
+                                                                        .withResourceType(satisfactoryClass.getResourceType())
+                                                                        .withRecipes(getRecipes(satisfactoryClass))
+                                                                        .build()));
     }
 
     private List<ItemRecipe> getRecipes(SatisfactoryClass satisfactoryClass) {
-        return myClassWrappers.stream()
+        return myClassWrappers
+                .stream()
                 .filter(entry -> NativeClass.FGRecipe.equals(entry.getNativeClass()))
-                .flatMap(entry -> entry.getClasses().stream())
-                .map(entry -> ItemRecipe.newBuilder()
+                .flatMap(entry -> entry
+                        .getClasses()
+                        .stream())
+                .map(entry -> ItemRecipe
+                        .newBuilder()
                         .withClassName(entry.getClassName())
                         .withDisplayName(entry.getDisplayName())
                         .withIngredients(getRecipeIngredients(entry))
@@ -70,12 +82,18 @@ public class ItemDescriptorImporter implements Runnable {
     }
 
     private boolean isRecipeAlternate(SatisfactoryClass recipe) {
-        return recipe.getDisplayName().startsWith(ALTERNATE_RECIPE_PREFIX);
+        return recipe
+                .getDisplayName()
+                .startsWith(ALTERNATE_RECIPE_PREFIX);
     }
 
     private boolean isRecipeValidFor(SatisfactoryClass satisfactoryClass, ItemRecipe recipe) {
-        return recipe.getProduces()
-                .stream().anyMatch(entry -> entry.getItemClassName().equals(satisfactoryClass.getClassName()));
+        return recipe
+                .getProduces()
+                .stream()
+                .anyMatch(entry -> entry
+                        .getItemClassName()
+                        .equals(satisfactoryClass.getClassName()));
     }
 
     private List<ItemRecipeIngredient> getRecipeIngredients(SatisfactoryClass recipe) {
@@ -83,11 +101,12 @@ public class ItemDescriptorImporter implements Runnable {
 
         Matcher matcher = RECIPE_PRODUCT_PATTERN.matcher(recipe.getIngredients());
         while (matcher.find()) {
-            ingredients.add(ItemRecipeIngredient.newBuilder()
-                    .withItemClassName(matcher.group(2))
-                    .withAmount(Float.parseFloat(matcher.group(3)))
-                    .isResource(RAW_RESOURCES.equals(matcher.group(1)))
-                    .build());
+            ingredients.add(ItemRecipeIngredient
+                                    .newBuilder()
+                                    .withItemClassName(matcher.group(2))
+                                    .withAmount(Float.parseFloat(matcher.group(3)))
+                                    .isResource(RAW_RESOURCES.equals(matcher.group(1)))
+                                    .build());
         }
         return ingredients;
     }
@@ -97,11 +116,12 @@ public class ItemDescriptorImporter implements Runnable {
 
         Matcher matcher = RECIPE_PRODUCT_PATTERN.matcher(recipe.getProduct());
         while (matcher.find()) {
-            products.add(ItemRecipeProduct.newBuilder()
-                    .withItemClassName(matcher.group(2))
-                    .withAmount(Float.parseFloat(matcher.group(3)))
-                    .isResource(RAW_RESOURCES.equals(matcher.group(1)))
-                    .build());
+            products.add(ItemRecipeProduct
+                                 .newBuilder()
+                                 .withItemClassName(matcher.group(2))
+                                 .withAmount(Float.parseFloat(matcher.group(3)))
+                                 .isResource(RAW_RESOURCES.equals(matcher.group(1)))
+                                 .build());
         }
         return products;
     }

@@ -29,12 +29,18 @@ public class RestPlannerService {
     }
 
     @GET
-    @Path("/{gameVersion}/{recipeClassName}/{amount}")
+    @Path("/{gameVersion}/{itemClassName}/{amount}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPlanning(@PathParam("gameVersion") String gameVersion,
-                                @PathParam("recipeClassName") String recipeClassName,
+                                @PathParam("itemClassName") String itemClassName,
                                 @PathParam("amount") float amount) {
-        PlannerStep solution = myPlannerProvider.getSolution(gameVersion, recipeClassName, amount);
+        if (!myPlannerProvider.doesItemExist(gameVersion, itemClassName)) {
+            return Response
+                    .status(Response.Status.NOT_FOUND)
+                    .build();
+        }
+
+        PlannerStep solution = myPlannerProvider.getSolution(gameVersion, itemClassName, amount);
 
         return Response
                 .status(Response.Status.OK)

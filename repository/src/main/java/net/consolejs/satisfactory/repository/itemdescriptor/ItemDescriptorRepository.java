@@ -26,7 +26,7 @@ public class ItemDescriptorRepository {
         myCollection = database.getCollection(COLLECTION);
         myCollection.createIndex(Indexes.ascending(GAME_VERSION));
         myCollection.createIndex(Indexes.descending(GAME_VERSION, CLASS_NAME),
-                new IndexOptions().unique(true));
+                                 new IndexOptions().unique(true));
     }
 
     public boolean isAnyRecipeForGameVersion(String gameVersion) {
@@ -40,7 +40,7 @@ public class ItemDescriptorRepository {
             myCollection.insertOne(getDocument(document));
         } catch (MongoWriteException exception) {
             LOGGER.severe(String.format("Failed to insert manufacturer, gameVersion: \"%s\", className: \"%s\"",
-                    document.getGameVersion(), document.getClassName()));
+                                        document.getGameVersion(), document.getClassName()));
             LOGGER.fine(exception.getMessage());
         }
     }
@@ -50,15 +50,23 @@ public class ItemDescriptorRepository {
             myCollection.deleteMany(new Document(GAME_VERSION, gameVersion));
         } catch (Exception exception) {
             LOGGER.severe(String.format("Failed to delete itemDescriptor for gameVersion: \"%s\"",
-                    gameVersion));
+                                        gameVersion));
         }
     }
 
     public ItemDescriptorDocument findByClassName(String gameVersion, String className) {
         Bson query = Filters.and(Filters.exists(GAME_VERSION), Filters.eq(GAME_VERSION, gameVersion),
-                Filters.exists(CLASS_NAME), Filters.eq(CLASS_NAME, className));
-        Document document = myCollection.find(query).first();
+                                 Filters.exists(CLASS_NAME), Filters.eq(CLASS_NAME, className));
+        Document document = myCollection
+                .find(query)
+                .first();
         return document == null ? null : getItemDescriptorDocument(document);
+    }
+
+    public boolean doItemExistByClassName(String gameVersion, String className) {
+        Bson query = Filters.and(Filters.exists(GAME_VERSION), Filters.eq(GAME_VERSION, gameVersion),
+                                 Filters.exists(CLASS_NAME), Filters.eq(CLASS_NAME, className));
+        return myCollection.countDocuments(query) > 0;
     }
 
     private ItemDescriptorDocument getItemDescriptorDocument(Document document) {
