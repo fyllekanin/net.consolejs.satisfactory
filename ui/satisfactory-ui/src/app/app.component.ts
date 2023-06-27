@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import * as cytoscape from 'cytoscape';
-import * as dagre from 'cytoscape-dagre';
+import * as klay from 'cytoscape-klay';
 import { exampleData } from './example.data';
 
 interface Data {
@@ -19,7 +19,7 @@ export class AppComponent implements AfterViewInit {
     @ViewChild('chart', { static: true }) myChart!: ElementRef;
 
     ngAfterViewInit(): void {
-        cytoscape.use(dagre);
+        cytoscape.use(klay);
         this.canvas = cytoscape({
             container: this.myChart.nativeElement,
 
@@ -29,7 +29,14 @@ export class AppComponent implements AfterViewInit {
                 {
                     selector: 'node',
                     style: {
-                        'content': 'data(id)'
+                        'content': 'data(id)',
+                        'width': '150px',
+                        'height': '100px',
+                        'shape': 'rectangle',
+                        'background-opacity': 0,
+                        'border-color': 'green',
+                        'border-width': 5,
+                        "text-margin-y": -10
                     }
                 },
                 {
@@ -40,7 +47,8 @@ export class AppComponent implements AfterViewInit {
                         'width': 4,
                         'line-color': '#ddd',
                         'target-arrow-color': '#ddd',
-                        'content': 'data(amount)'
+                        'content': 'data(amount)',
+                        'text-margin-y': -10
                     }
                 },
                 {
@@ -57,12 +65,15 @@ export class AppComponent implements AfterViewInit {
 
             elements: this.getData(),
 
-            layout: <dagre.DagreLayoutOptions>{
-                name: 'dagre',
-                rankDir: 'LR',
+            layout: <klay.KlayLayoutOptions>{
+                name: 'klay',
                 fit: true,
-                padding: 50,
-                spacingFactor: 3
+                padding: 0,
+                spacingFactor: 3,
+                klay: {
+                    nodeLayering: 'INTERACTIVE',
+                    randomizationSeed: 2
+                }
             }
         });
     }

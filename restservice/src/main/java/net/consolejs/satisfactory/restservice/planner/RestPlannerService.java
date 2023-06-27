@@ -29,6 +29,13 @@ public class RestPlannerService {
     }
 
     @GET
+    @Path("/{gameVersion}/recipes")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAvailableRecipes(@PathParam("gameVersion") String gameVersion) {
+        return null;
+    }
+
+    @GET
     @Path("/{gameVersion}/{itemClassName}/{amount}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPlanning(@PathParam("gameVersion") String gameVersion,

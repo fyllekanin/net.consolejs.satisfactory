@@ -14,7 +14,8 @@ public class ResourceImporter implements Runnable {
     private final List<SatisfactoryClassWrapper> myClassWrappers;
     private final String myGameVersion;
 
-    public ResourceImporter(RepositoryFactory repositoryFactory, List<SatisfactoryClassWrapper> classWrappers, String gameVersion) {
+    public ResourceImporter(RepositoryFactory repositoryFactory, List<SatisfactoryClassWrapper> classWrappers,
+                            String gameVersion) {
         myRepositoryFactory = repositoryFactory;
         myClassWrappers = classWrappers;
         myGameVersion = gameVersion;
@@ -22,25 +23,32 @@ public class ResourceImporter implements Runnable {
 
     public void run() {
         ResourceRepository repository = myRepositoryFactory.of(ResourceRepository.class);
-        myClassWrappers.stream()
+        myClassWrappers
+                .stream()
                 .filter(entry -> NativeClass.FGResourceDescriptor.equals(entry.getNativeClass()))
                 .findFirst()
                 .ifPresent(entry -> {
                     for (SatisfactoryClass clazz : entry.getClasses()) {
-                        repository.create(ResourceDocument.newBuilder()
-                                .withGameVersion(myGameVersion)
-                                .withClassName(clazz.getClassName())
-                                .withDisplayName(clazz.getDisplayName())
-                                .withDescription(clazz.getDescription())
-                                .withSmallIcon(getCleanIconValue(clazz.getSmallIcon()))
-                                .withBigIcon(getCleanIconValue(clazz.getBigIcon()))
-                                .withResourceType(clazz.getResourceType())
-                                .build());
+                        repository.create(ResourceDocument
+                                                  .newBuilder()
+                                                  .withGameVersion(myGameVersion)
+                                                  .withClassName(clazz.getClassName())
+                                                  .withDisplayName(clazz.getDisplayName())
+                                                  .withDescription(clazz.getDescription())
+                                                  .withSmallIcon(getCleanIconValue(clazz.getSmallIcon()))
+                                                  .withBigIcon(getCleanIconValue(clazz.getBigIcon()))
+                                                  .withResourceType(clazz.getResourceType())
+                                                  .build());
                     }
                 });
     }
 
     private String getCleanIconValue(String icon) {
-        return icon == null ? null : icon.replace("Texture2D ", "");
+        if (icon == null) {
+            return null;
+        }
+        return icon
+                .replace("Texture2D ", "")
+                .split("\\.")[0];
     }
 }

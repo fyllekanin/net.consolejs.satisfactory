@@ -10,6 +10,8 @@ public class PlannerStep {
     private final String myRecipeClassName;
     @SerializedName("amount")
     private final float myAmount;
+    @SerializedName("displayName")
+    private final String myDisplayName;
     @SerializedName("manufacturer")
     private final PlannerManufacturer myManufacturer;
     @SerializedName("preSteps")
@@ -18,6 +20,7 @@ public class PlannerStep {
     private PlannerStep(Builder builder) {
         myRecipeClassName = builder.myRecipeClassName;
         myAmount = builder.myAmount;
+        myDisplayName = builder.myDisplayName;
         myManufacturer = builder.myManufacturer;
         myPreSteps = builder.myPreSteps;
     }
@@ -34,6 +37,10 @@ public class PlannerStep {
         return myAmount;
     }
 
+    public String getDisplayName() {
+        return myDisplayName;
+    }
+
     public PlannerManufacturer getManufacturer() {
         return myManufacturer;
     }
@@ -47,6 +54,7 @@ public class PlannerStep {
         if (obj instanceof PlannerStep other) {
             return Objects.equals(myRecipeClassName, other.myRecipeClassName) &&
                     Objects.equals(myAmount, other.myAmount) &&
+                    Objects.equals(myDisplayName, other.myDisplayName) &&
                     Objects.equals(myManufacturer, other.myManufacturer) &&
                     Objects.equals(myPreSteps, other.myPreSteps);
         }
@@ -55,12 +63,13 @@ public class PlannerStep {
 
     @Override
     public int hashCode() {
-        return Objects.hash(myRecipeClassName, myAmount, myManufacturer, myPreSteps);
+        return Objects.hash(myRecipeClassName, myAmount, myDisplayName, myManufacturer, myPreSteps);
     }
 
     public static class Builder {
         private String myRecipeClassName;
         private float myAmount;
+        private String myDisplayName;
         private PlannerManufacturer myManufacturer;
         private List<PlannerStep> myPreSteps;
 
@@ -74,6 +83,11 @@ public class PlannerStep {
 
         public Builder withAmount(float amount) {
             myAmount = amount;
+            return this;
+        }
+
+        public Builder withDisplayName(String displayName) {
+            myDisplayName = displayName;
             return this;
         }
 

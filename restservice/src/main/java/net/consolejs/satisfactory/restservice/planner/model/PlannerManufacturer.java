@@ -11,11 +11,14 @@ public class PlannerManufacturer {
     private final String myIcon;
     @SerializedName("displayName")
     private final String myDisplayName;
+    @SerializedName("amount")
+    private final float myAmount;
 
     private PlannerManufacturer(Builder builder) {
         myManufacturerClassName = builder.myManufacturerClassName;
         myIcon = builder.myIcon;
         myDisplayName = builder.myDisplayName;
+        myAmount = builder.myAmount;
     }
 
     public static Builder newBuilder() {
@@ -34,6 +37,10 @@ public class PlannerManufacturer {
         return myDisplayName;
     }
 
+    public float getAmount() {
+        return myAmount;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -45,18 +52,20 @@ public class PlannerManufacturer {
         PlannerManufacturer other = (PlannerManufacturer) obj;
         return Objects.equals(myManufacturerClassName, other.myManufacturerClassName)
                 && Objects.equals(myIcon, other.myIcon)
-                && Objects.equals(myDisplayName, other.myDisplayName);
+                && Objects.equals(myDisplayName, other.myDisplayName)
+                && Objects.equals(myAmount, other.myAmount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(myManufacturerClassName, myIcon, myDisplayName);
+        return Objects.hash(myManufacturerClassName, myIcon, myDisplayName, myAmount);
     }
 
     public static class Builder {
         private String myManufacturerClassName;
         private String myIcon;
         private String myDisplayName;
+        private float myAmount;
 
         private Builder() {
         }
@@ -73,6 +82,11 @@ public class PlannerManufacturer {
 
         public Builder withDisplayName(String displayName) {
             myDisplayName = displayName;
+            return this;
+        }
+
+        public Builder withAmount(float amount) {
+            myAmount = amount;
             return this;
         }
 

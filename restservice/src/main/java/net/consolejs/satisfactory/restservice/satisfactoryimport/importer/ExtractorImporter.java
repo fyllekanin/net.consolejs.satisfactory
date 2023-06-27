@@ -22,7 +22,8 @@ public class ExtractorImporter implements Runnable {
     private final List<SatisfactoryClassWrapper> myClassWrappers;
     private final String myGameVersion;
 
-    public ExtractorImporter(RepositoryFactory repositoryFactory, List<SatisfactoryClassWrapper> classWrappers, String gameVersion) {
+    public ExtractorImporter(RepositoryFactory repositoryFactory, List<SatisfactoryClassWrapper> classWrappers,
+                             String gameVersion) {
         myRepositoryFactory = repositoryFactory;
         myClassWrappers = classWrappers;
         myGameVersion = gameVersion;
@@ -30,12 +31,14 @@ public class ExtractorImporter implements Runnable {
 
     public void run() {
         ExtractorRepository repository = myRepositoryFactory.of(ExtractorRepository.class);
-        myClassWrappers.stream()
+        myClassWrappers
+                .stream()
                 .filter(entry -> NativeClass.FGBuildableResourceExtractor.equals(entry.getNativeClass()) ||
                         NativeClass.FGBuildableWaterPump.equals(entry.getNativeClass()))
                 .forEach(entry -> {
                     for (SatisfactoryClass clazz : entry.getClasses()) {
-                        ExtractorDocument.Builder builder = ExtractorDocument.newBuilder()
+                        ExtractorDocument.Builder builder = ExtractorDocument
+                                .newBuilder()
                                 .withGameVersion(myGameVersion)
                                 .withClassName(clazz.getClassName())
                                 .withResourceType(getResourceType(clazz.getAllowedResourceForms()))
@@ -43,7 +46,8 @@ public class ExtractorImporter implements Runnable {
                                 .withDescription(clazz.getDescription())
                                 .withAllowedResources(getAllowedResources(clazz));
 
-                        getDescriptorClazz(clazz).ifPresent(descriptorClazz -> builder.withSmallIcon(getCleanIconValue(descriptorClazz.getSmallIcon()))
+                        getDescriptorClazz(clazz).ifPresent(descriptorClazz -> builder
+                                .withSmallIcon(getCleanIconValue(descriptorClazz.getSmallIcon()))
                                 .withBigIcon(getCleanIconValue(descriptorClazz.getBigIcon())));
 
                         repository.create(builder.build());
@@ -70,18 +74,28 @@ public class ExtractorImporter implements Runnable {
     private Optional<SatisfactoryClass> getDescriptorClazz(SatisfactoryClass manufacturer) {
         String descriptorClassName = getDescriptorClassName(manufacturer);
 
-        return myClassWrappers.stream()
+        return myClassWrappers
+                .stream()
                 .filter(entry -> NativeClass.FGBuildingDescriptor.equals(entry.getNativeClass()))
-                .flatMap(entry -> entry.getClasses().stream())
+                .flatMap(entry -> entry
+                        .getClasses()
+                        .stream())
                 .filter(entry -> descriptorClassName.equals(entry.getClassName()))
                 .findFirst();
     }
 
     private String getDescriptorClassName(SatisfactoryClass manufacturer) {
-        return manufacturer.getClassName().replace("Build_", "Desc_");
+        return manufacturer
+                .getClassName()
+                .replace("Build_", "Desc_");
     }
 
     private String getCleanIconValue(String icon) {
-        return icon == null ? null : icon.replace("Texture2D ", "");
+        if (icon == null) {
+            return null;
+        }
+        return icon
+                .replace("Texture2D ", "")
+                .split("\\.")[0];
     }
 }

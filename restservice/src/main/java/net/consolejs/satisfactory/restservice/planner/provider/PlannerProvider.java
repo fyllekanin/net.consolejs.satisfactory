@@ -64,7 +64,8 @@ public class PlannerProvider {
                 .newBuilder()
                 .withRecipeClassName(recipe.getClassName())
                 .withAmount(amount)
-                .withManufacturer(getManufacturer(gameVersion, recipe))
+                .withDisplayName(recipe.getDisplayName())
+                .withManufacturer(getManufacturer(gameVersion, recipe, itemClassName, amount))
                 .withPreSteps(getPreSteps(gameVersion, recipe, amount, itemClassName))
                 .build();
     }
@@ -90,7 +91,7 @@ public class PlannerProvider {
                 .filter(item -> item
                         .getItemClassName()
                         .equals(itemClassName))
-                .map(item -> item.getAmount())
+                .map(ItemRecipeProduct::getAmount)
                 .findFirst()
                 .orElse(1F);
     }
@@ -100,20 +101,31 @@ public class PlannerProvider {
                 .newBuilder()
                 .withRecipeClassName(resourceDocument.getClassName())
                 .withAmount(amount)
+                .withDisplayName(resourceDocument.getDisplayName())
                 .withManufacturer(null)
                 .build();
     }
 
-    private PlannerManufacturer getManufacturer(String gameVersion, ItemRecipe recipe) {
+    private PlannerManufacturer getManufacturer(String gameVersion, ItemRecipe recipe, String itemClassName,
+                                                float amount) {
         ManufacturerDocument document = myRepositoryFactory
                 .of(ManufacturerRepository.class)
                 .findByClassName(gameVersion, recipe.getManufacturerClassName());
-        return PlannerManufacturer
+        PlannerManufacturer.Builder builder = PlannerManufacturer
                 .newBuilder()
                 .withManufacturerClassName(document.getClassName())
                 .withIcon(document.getSmallIcon())
-                .withDisplayName(document.getDisplayName())
-                .build();
+                .withDisplayName(document.getDisplayName());
+
+        recipe
+                .getProduces()
+                .stream()
+                .filter(item -> item
+                        .getItemClassName()
+                        .equals(itemClassName))
+                .findFirst()
+                .ifPresent(product -> builder.withAmount(amount / product.getAmountPerMinute()));
+        return builder.build();
     }
 
     private ItemRecipe getItemRecipe(ItemDescriptorDocument document) {

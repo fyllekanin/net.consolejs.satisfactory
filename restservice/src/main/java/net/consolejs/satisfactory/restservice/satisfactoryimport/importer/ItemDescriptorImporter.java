@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ItemDescriptorImporter implements Runnable {
+    private static final float ONE_MINUTE = 60;
     private static final Pattern RECIPE_PRODUCT_PATTERN = Pattern.compile("/Game/FactoryGame/Resource/" +
                                                                                   "(Parts|RawResources)/\\w+/\\w+." +
                                                                                   "(\\w+)\\\"',Amount=([0-9]+)");
@@ -120,17 +121,26 @@ public class ItemDescriptorImporter implements Runnable {
 
         Matcher matcher = RECIPE_PRODUCT_PATTERN.matcher(recipe.getProduct());
         while (matcher.find()) {
+            float perMin = (ONE_MINUTE / recipe.getManufactoringDuration())
+                    * Float.parseFloat(matcher.group(3));
+
             products.add(ItemRecipeProduct
                                  .newBuilder()
                                  .withItemClassName(matcher.group(2))
                                  .withAmount(Float.parseFloat(matcher.group(3)))
                                  .isResource(RAW_RESOURCES.equals(matcher.group(1)))
+                                 .withAmountPerMinute(perMin)
                                  .build());
         }
         return products;
     }
 
     private String getCleanIconValue(String icon) {
-        return icon == null ? null : icon.replace("Texture2D ", "");
+        if (icon == null) {
+            return null;
+        }
+        return icon
+                .replace("Texture2D ", "")
+                .split("\\.")[0];
     }
 }
