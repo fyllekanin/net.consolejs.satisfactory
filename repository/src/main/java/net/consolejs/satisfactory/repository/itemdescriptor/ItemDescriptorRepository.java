@@ -11,6 +11,9 @@ import net.consolejs.satisfactory.entityview.document.itemdescriptor.ItemDescrip
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class ItemDescriptorRepository {
@@ -43,6 +46,30 @@ public class ItemDescriptorRepository {
                                         document.getGameVersion(), document.getClassName()));
             LOGGER.fine(exception.getMessage());
         }
+    }
+
+    public List<ItemDescriptorDocument> getAll() {
+        Iterator<Document> documents = myCollection
+                .find()
+                .iterator();
+        List<ItemDescriptorDocument> result = new ArrayList<>();
+        while (documents.hasNext()) {
+            result.add(getItemDescriptorDocument(documents.next()));
+        }
+        return result;
+    }
+
+    public List<ItemDescriptorDocument> getAllForGameVersion(String gameVersion) {
+        Bson query = Filters.and(Filters.exists(GAME_VERSION), Filters.eq(GAME_VERSION, gameVersion));
+
+        Iterator<Document> documents = myCollection
+                .find(query)
+                .iterator();
+        List<ItemDescriptorDocument> result = new ArrayList<>();
+        while (documents.hasNext()) {
+            result.add(getItemDescriptorDocument(documents.next()));
+        }
+        return result;
     }
 
     public void deleteByGameVersion(String gameVersion) {

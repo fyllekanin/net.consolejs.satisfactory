@@ -33,10 +33,10 @@ export class AppComponent implements AfterViewInit {
                         'width': '150px',
                         'height': '100px',
                         'shape': 'rectangle',
-                        'background-opacity': 0,
-                        'border-color': 'green',
-                        'border-width': 5,
-                        "text-margin-y": -10
+                        'text-margin-y': -10,
+                        'background-image': 'data(icon)',
+                        'background-fit': 'contain',
+                        'background-opacity': 0
                     }
                 },
                 {
@@ -69,7 +69,7 @@ export class AppComponent implements AfterViewInit {
                 name: 'klay',
                 fit: true,
                 padding: 0,
-                spacingFactor: 3,
+                spacingFactor: 2,
                 klay: {
                     nodeLayering: 'INTERACTIVE',
                     randomizationSeed: 2
@@ -99,25 +99,29 @@ export class AppComponent implements AfterViewInit {
     }
 
     private getNodes(): Array<cytoscape.NodeDefinition> {
-        return this.getFlatten().map(item => ({ data: { id: item.name } }));
+        return this.getFlatten().map(item => ({ data: { id: item.name, icon: item.icon } }));
     }
 
-    private getFlatten(): Array<{ name: string, parent: string | undefined, amount: number }> {
-        const result: Array<{ name: string, parent: string | undefined, amount: number }> = [
-            { name: 'Result', parent: undefined, amount: exampleData.amount },
-            { name: exampleData.recipeClassName, parent: 'Result', amount: exampleData.amount }
+    private getFlatten(): Array<{ name: string, parent: string | undefined, amount: number, icon: string }> {
+        const result: Array<{ name: string, parent: string | undefined, amount: number, icon: string }> = [
+            { name: 'Result', parent: undefined, amount: exampleData.amount, icon: this.getIconUrl(exampleData.manufacturer.icon) },
+            { name: exampleData.displayName, parent: 'Result', amount: exampleData.amount, icon: this.getIconUrl(exampleData.manufacturer.icon) }
         ];
-        result.push(...this.getFlat(exampleData.preSteps, exampleData.recipeClassName));
+        result.push(...this.getFlat(exampleData.preSteps, exampleData.displayName));
         return result;
     }
 
-    private getFlat(preSteps: Array<any>, parent?: string): Array<{ name: string, parent: string | undefined, amount: number }> {
+    private getFlat(preSteps: Array<any>, parent?: string): Array<{ name: string, parent: string | undefined, amount: number, icon: string }> {
         return preSteps.reduce((prev, curr) => {
-            prev.push({ name: curr.recipeClassName, parent: parent, amount: curr.amount });
+            prev.push({ name: curr.displayName, parent: parent, amount: curr.amount, icon: this.getIconUrl(curr.manufacturer?.icon) });
             if (curr.preSteps) {
-                prev.push(...this.getFlat(curr.preSteps, curr.recipeClassName));
+                prev.push(...this.getFlat(curr.preSteps, curr.displayName));
             }
             return prev;
         }, []);
+    }
+
+    private getIconUrl(icon: string): string {
+        return `/resources/test1${icon}.png`;
     }
 }

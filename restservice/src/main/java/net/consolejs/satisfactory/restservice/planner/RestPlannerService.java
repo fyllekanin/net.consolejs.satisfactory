@@ -9,18 +9,21 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import net.consolejs.satisfactory.entityview.document.itemdescriptor.ItemRecipe;
 import net.consolejs.satisfactory.repository.RepositoryFactory;
+import net.consolejs.satisfactory.repository.itemdescriptor.ItemDescriptorRepository;
 import net.consolejs.satisfactory.restservice.planner.model.PlannerStep;
 import net.consolejs.satisfactory.restservice.planner.provider.PlannerProvider;
 
+import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Path("/api/v1/planner")
 public class RestPlannerService {
     private static final Logger LOGGER = Logger.getLogger(RestPlannerService.class.getName());
     @Inject
     private RepositoryFactory myRepositoryFactory;
-
     private PlannerProvider myPlannerProvider;
 
     @PostConstruct
@@ -32,7 +35,10 @@ public class RestPlannerService {
     @Path("/{gameVersion}/recipes")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAvailableRecipes(@PathParam("gameVersion") String gameVersion) {
-        return null;
+        return Response
+                .status(Response.Status.OK)
+                .entity(new Gson().toJson(getAllRecipes(gameVersion)))
+                .build();
     }
 
     @GET
@@ -53,5 +59,16 @@ public class RestPlannerService {
                 .status(Response.Status.OK)
                 .entity(new Gson().toJson(solution, PlannerStep.class))
                 .build();
+    }
+
+    private List<ItemRecipe> getAllRecipes(String gameVersion) {
+        return myRepositoryFactory
+                .of(ItemDescriptorRepository.class)
+                .getAllForGameVersion(gameVersion)
+                .stream()
+                .flatMap(entry -> entry
+                        .getRecipes()
+                        .stream())
+                .collect(Collectors.toList());
     }
 }
