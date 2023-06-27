@@ -48,17 +48,6 @@ public class ItemDescriptorRepository {
         }
     }
 
-    public List<ItemDescriptorDocument> getAll() {
-        Iterator<Document> documents = myCollection
-                .find()
-                .iterator();
-        List<ItemDescriptorDocument> result = new ArrayList<>();
-        while (documents.hasNext()) {
-            result.add(getItemDescriptorDocument(documents.next()));
-        }
-        return result;
-    }
-
     public List<ItemDescriptorDocument> getAllForGameVersion(String gameVersion) {
         Bson query = Filters.and(Filters.exists(GAME_VERSION), Filters.eq(GAME_VERSION, gameVersion));
 

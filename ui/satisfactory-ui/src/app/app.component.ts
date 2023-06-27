@@ -3,11 +3,6 @@ import * as cytoscape from 'cytoscape';
 import * as klay from 'cytoscape-klay';
 import { exampleData } from './example.data';
 
-interface Data {
-    name: string;
-    children: Array<Data>;
-}
-
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
@@ -102,9 +97,9 @@ export class AppComponent implements AfterViewInit {
         return this.getFlatten().map(item => ({ data: { id: item.name, icon: item.icon } }));
     }
 
-    private getFlatten(): Array<{ name: string, parent: string | undefined, amount: number, icon: string }> {
-        const result: Array<{ name: string, parent: string | undefined, amount: number, icon: string }> = [
-            { name: 'Result', parent: undefined, amount: exampleData.amount, icon: this.getIconUrl(exampleData.manufacturer.icon) },
+    private getFlatten(): Array<{ name: string, parent: string | undefined, amount: number, icon?: string }> {
+        const result: Array<{ name: string, parent: string | undefined, amount: number, icon?: string }> = [
+            { name: 'Result', parent: undefined, amount: exampleData.amount, icon: this.getIconUrl(exampleData.icon) },
             { name: exampleData.displayName, parent: 'Result', amount: exampleData.amount, icon: this.getIconUrl(exampleData.manufacturer.icon) }
         ];
         result.push(...this.getFlat(exampleData.preSteps, exampleData.displayName));
@@ -113,7 +108,7 @@ export class AppComponent implements AfterViewInit {
 
     private getFlat(preSteps: Array<any>, parent?: string): Array<{ name: string, parent: string | undefined, amount: number, icon: string }> {
         return preSteps.reduce((prev, curr) => {
-            prev.push({ name: curr.displayName, parent: parent, amount: curr.amount, icon: this.getIconUrl(curr.manufacturer?.icon) });
+            prev.push({ name: curr.displayName, parent: parent, amount: curr.amount, icon: this.getIconUrl(curr.manufacturer?.icon) || this.getIconUrl(curr.extractor?.icon) });
             if (curr.preSteps) {
                 prev.push(...this.getFlat(curr.preSteps, curr.displayName));
             }
@@ -121,7 +116,7 @@ export class AppComponent implements AfterViewInit {
         }, []);
     }
 
-    private getIconUrl(icon: string): string {
-        return `/resources/test1${icon}.png`;
+    private getIconUrl(icon: string): string | undefined {
+        return icon ? `/resources/test1${icon}.png` : undefined;
     }
 }

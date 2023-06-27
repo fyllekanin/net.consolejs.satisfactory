@@ -11,6 +11,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import net.consolejs.satisfactory.repository.RepositoryFactory;
 import net.consolejs.satisfactory.repository.extractor.ExtractorRepository;
+import net.consolejs.satisfactory.repository.gameimport.GameImportRepository;
 import net.consolejs.satisfactory.repository.itemdescriptor.ItemDescriptorRepository;
 import net.consolejs.satisfactory.repository.manufacturer.ManufacturerRepository;
 import net.consolejs.satisfactory.repository.resource.ResourceRepository;
@@ -74,18 +75,16 @@ public class RestImportService {
             }
 
             myFileService.deleteDirectory(gameVersion);
-            myRepositoryFactory
-                    .of(ResourceRepository.class)
-                    .deleteByGameVersion(gameVersion);
-            myRepositoryFactory
-                    .of(ManufacturerRepository.class)
-                    .deleteByGameVersion(gameVersion);
-            myRepositoryFactory
-                    .of(ExtractorRepository.class)
-                    .deleteByGameVersion(gameVersion);
-            myRepositoryFactory
-                    .of(ItemDescriptorRepository.class)
-                    .deleteByGameVersion(gameVersion);
+            myRepositoryFactory.of(ResourceRepository.class)
+                               .deleteByGameVersion(gameVersion);
+            myRepositoryFactory.of(ManufacturerRepository.class)
+                               .deleteByGameVersion(gameVersion);
+            myRepositoryFactory.of(ExtractorRepository.class)
+                               .deleteByGameVersion(gameVersion);
+            myRepositoryFactory.of(ItemDescriptorRepository.class)
+                               .deleteByGameVersion(gameVersion);
+            myRepositoryFactory.of(GameImportRepository.class)
+                               .deleteByGameVersion(gameVersion);
         } catch (Exception exception) {
             LOGGER.log(Level.SEVERE, String.format("Import failed: \"%s\"", exception.getMessage()));
             return Response

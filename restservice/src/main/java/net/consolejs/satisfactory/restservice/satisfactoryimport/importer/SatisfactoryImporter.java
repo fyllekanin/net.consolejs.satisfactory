@@ -1,6 +1,8 @@
 package net.consolejs.satisfactory.restservice.satisfactoryimport.importer;
 
+import net.consolejs.satisfactory.entityview.document.gameimport.GameImportDocument;
 import net.consolejs.satisfactory.repository.RepositoryFactory;
+import net.consolejs.satisfactory.repository.gameimport.GameImportRepository;
 import net.consolejs.satisfactory.repository.itemdescriptor.ItemDescriptorRepository;
 import net.consolejs.satisfactory.restservice.satisfactoryimport.model.SatisfactoryClassWrapper;
 import net.consolejs.satisfactory.restservice.satisfactoryimport.model.SatisfactoryImport;
@@ -9,6 +11,7 @@ import net.consolejs.satisfactory.service.file.FileService;
 import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.List;
 
 public class SatisfactoryImporter {
@@ -23,8 +26,8 @@ public class SatisfactoryImporter {
     public boolean isAlreadyImported(FormDataMultiPart formParams) {
         SatisfactoryImportProvider provider = new SatisfactoryImportProvider(formParams);
         return myRepositoryFactory
-                .of(ItemDescriptorRepository.class)
-                .isAnyRecipeForGameVersion(provider.getGameVersion());
+                .of(GameImportRepository.class)
+                .isImportAlreadyPresent(provider.getGameVersion());
     }
 
     public boolean isAlreadyImported(String gameVersion) {
@@ -61,5 +64,13 @@ public class SatisfactoryImporter {
         manufacturerImporter.join();
         extractorImporter.join();
         itemDescriptorImporter.join();
+
+        myRepositoryFactory.of(GameImportRepository.class)
+                           .create(GameImportDocument.newBuilder()
+                                                     .withType(provider.getType())
+                                                     .withGameVersion(provider.getGameVersion())
+                                                     .withImportedAt(Instant.now()
+                                                                            .toEpochMilli())
+                                                     .build());
     }
 }

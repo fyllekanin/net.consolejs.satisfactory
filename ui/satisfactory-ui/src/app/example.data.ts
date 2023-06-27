@@ -45,7 +45,12 @@ export const exampleData = {
                                 {
                                     "recipeClassName": "Desc_OreCopper_C",
                                     "amount": 600.0,
-                                    "displayName": "Copper Ore"
+                                    "displayName": "Copper Ore",
+                                    "extractor": {
+                                        "extractorClassName": "Build_MinerMk1_C",
+                                        "icon": "/Game/FactoryGame/Buildable/Factory/MinerMK1/UI/IconDesc_MinerMk1_256",
+                                        "displayName": "Miner Mk.1"
+                                    }
                                 }
                             ]
                         }
@@ -65,7 +70,12 @@ export const exampleData = {
                         {
                             "recipeClassName": "Desc_LiquidOil_C",
                             "amount": 900.0,
-                            "displayName": "Crude Oil"
+                            "displayName": "Crude Oil",
+                            "extractor": {
+                                "extractorClassName": "Build_OilPump_C",
+                                "icon": "/Game/FactoryGame/Buildable/Factory/OilPump/UI/OilPump_256",
+                                "displayName": "Oil Extractor"
+                            }
                         }
                     ]
                 }
@@ -107,7 +117,12 @@ export const exampleData = {
                                 {
                                     "recipeClassName": "Desc_OreCopper_C",
                                     "amount": 135.0,
-                                    "displayName": "Copper Ore"
+                                    "displayName": "Copper Ore",
+                                    "extractor": {
+                                        "extractorClassName": "Build_MinerMk1_C",
+                                        "icon": "/Game/FactoryGame/Buildable/Factory/MinerMK1/UI/IconDesc_MinerMk1_256",
+                                        "displayName": "Miner Mk.1"
+                                    }
                                 }
                             ]
                         }
@@ -129,7 +144,12 @@ export const exampleData = {
                 {
                     "recipeClassName": "Desc_LiquidOil_C",
                     "amount": 405.0,
-                    "displayName": "Crude Oil"
+                    "displayName": "Crude Oil",
+                    "extractor": {
+                        "extractorClassName": "Build_OilPump_C",
+                        "icon": "/Game/FactoryGame/Buildable/Factory/OilPump/UI/OilPump_256",
+                        "displayName": "Oil Extractor"
+                    }
                 }
             ]
         },
@@ -169,7 +189,12 @@ export const exampleData = {
                                 {
                                     "recipeClassName": "Desc_OreIron_C",
                                     "amount": 195.0,
-                                    "displayName": "Iron Ore"
+                                    "displayName": "Iron Ore",
+                                    "extractor": {
+                                        "extractorClassName": "Build_MinerMk1_C",
+                                        "icon": "/Game/FactoryGame/Buildable/Factory/MinerMK1/UI/IconDesc_MinerMk1_256",
+                                        "displayName": "Miner Mk.1"
+                                    }
                                 }
                             ]
                         }
@@ -177,5 +202,7 @@ export const exampleData = {
                 }
             ]
         }
-    ]
+    ],
+    "icon": "/Game/FactoryGame/Resource/Parts/Computer/UI/IconDesc_Computer_256"
 };
+

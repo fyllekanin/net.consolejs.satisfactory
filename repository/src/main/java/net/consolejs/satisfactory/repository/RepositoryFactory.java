@@ -5,6 +5,7 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import net.consolejs.satisfactory.repository.extractor.ExtractorRepository;
+import net.consolejs.satisfactory.repository.gameimport.GameImportRepository;
 import net.consolejs.satisfactory.repository.itemdescriptor.ItemDescriptorRepository;
 import net.consolejs.satisfactory.repository.manufacturer.ManufacturerRepository;
 import net.consolejs.satisfactory.repository.resource.ResourceRepository;
@@ -25,18 +26,20 @@ public class RepositoryFactory {
 
     public RepositoryFactory() {
         String uri = String.format("mongodb://%s:%s@%s:%s/%s?retryWrites=true&w=majority",
-                System.getProperty(USERNAME_KEY),
-                System.getProperty(PASSWORD_KEY),
-                System.getProperty(HOST_KEY),
-                System.getProperty(PORT_KEY),
-                System.getProperty(AUTH_DATABASE_KEY));
+                                   System.getProperty(USERNAME_KEY),
+                                   System.getProperty(PASSWORD_KEY),
+                                   System.getProperty(HOST_KEY),
+                                   System.getProperty(PORT_KEY),
+                                   System.getProperty(AUTH_DATABASE_KEY));
 
         MongoClient client = MongoClients.create(uri);
         myDatabase = client.getDatabase(System.getProperty(DATABASE_KEY));
 
         CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
-                fromProviders(PojoCodecProvider.builder()
-                        .automatic(true).build()));
+                                                         fromProviders(PojoCodecProvider
+                                                                               .builder()
+                                                                               .automatic(true)
+                                                                               .build()));
         myDatabase.withCodecRegistry(pojoCodecRegistry);
     }
 
@@ -53,6 +56,9 @@ public class RepositoryFactory {
         }
         if (clazz.equals(ItemDescriptorRepository.class)) {
             return (T) new ItemDescriptorRepository(myDatabase);
+        }
+        if (clazz.equals(GameImportRepository.class)) {
+            return (T) new GameImportRepository(myDatabase);
         }
         return null;
     }

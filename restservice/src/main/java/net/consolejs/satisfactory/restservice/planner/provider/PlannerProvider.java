@@ -1,5 +1,6 @@
 package net.consolejs.satisfactory.restservice.planner.provider;
 
+import net.consolejs.satisfactory.entityview.document.extractor.ExtractorDocument;
 import net.consolejs.satisfactory.entityview.document.itemdescriptor.ItemDescriptorDocument;
 import net.consolejs.satisfactory.entityview.document.itemdescriptor.ItemRecipe;
 import net.consolejs.satisfactory.entityview.document.itemdescriptor.ItemRecipeIngredient;
@@ -8,9 +9,11 @@ import net.consolejs.satisfactory.entityview.document.manufacturer.ManufacturerD
 import net.consolejs.satisfactory.entityview.document.resource.ResourceDocument;
 import net.consolejs.satisfactory.entityview.satisfactory.ResourceType;
 import net.consolejs.satisfactory.repository.RepositoryFactory;
+import net.consolejs.satisfactory.repository.extractor.ExtractorRepository;
 import net.consolejs.satisfactory.repository.itemdescriptor.ItemDescriptorRepository;
 import net.consolejs.satisfactory.repository.manufacturer.ManufacturerRepository;
 import net.consolejs.satisfactory.repository.resource.ResourceRepository;
+import net.consolejs.satisfactory.restservice.planner.model.PlannerExtractor;
 import net.consolejs.satisfactory.restservice.planner.model.PlannerManufacturer;
 import net.consolejs.satisfactory.restservice.planner.model.PlannerStep;
 
@@ -36,7 +39,15 @@ public class PlannerProvider {
                 .findByClassName(gameVersion, itemClassName);
         ItemRecipe recipe = getItemRecipe(document);
 
-        return getPlannerStep(gameVersion, recipe, amount, document.getClassName());
+        return PlannerStep
+                .newBuilder()
+                .withRecipeClassName(recipe.getClassName())
+                .withAmount(amount)
+                .withDisplayName(recipe.getDisplayName())
+                .withManufacturer(getManufacturer(gameVersion, recipe, itemClassName, amount))
+                .withPreSteps(getPreSteps(gameVersion, recipe, amount, itemClassName))
+                .withIcon(document.getBigIcon())
+                .build();
     }
 
     private PlannerStep getPlannerStepForResource(String gameVersion, ItemRecipeIngredient ingredient,
@@ -102,15 +113,34 @@ public class PlannerProvider {
                 .withRecipeClassName(resourceDocument.getClassName())
                 .withAmount(amount)
                 .withDisplayName(resourceDocument.getDisplayName())
-                .withManufacturer(null)
+                .withExtractor(getExtractor(gameVersion, resourceDocument))
                 .build();
+    }
+
+    private PlannerExtractor getExtractor(String gameVersion, ResourceDocument resourceDocument) {
+        List<ExtractorDocument> documents = myRepositoryFactory.of(ExtractorRepository.class)
+                                                               .getExtractorsByGameVersion(gameVersion);
+
+        return documents.stream()
+                        .filter(item -> item.getResourceType()
+                                            .equals(resourceDocument.getResourceType()))
+                        .filter(item -> item.getAllowedResources()
+                                            .size() == 0 || item.getAllowedResources()
+                                                                .contains(resourceDocument.getClassName()))
+                        .map(item -> PlannerExtractor.newBuilder()
+                                                     .withExtractorClassName(item.getClassName())
+                                                     .withDisplayName(item.getDisplayName())
+                                                     .withIcon(item.getSmallIcon())
+                                                     .build())
+                        .findFirst()
+                        .orElse(null);
     }
 
     private PlannerManufacturer getManufacturer(String gameVersion, ItemRecipe recipe, String itemClassName,
                                                 float amount) {
-        ManufacturerDocument document = myRepositoryFactory
-                .of(ManufacturerRepository.class)
-                .findByClassName(gameVersion, recipe.getManufacturerClassName());
+        ManufacturerDocument document = myRepositoryFactory.of(ManufacturerRepository.class)
+                                                           .findByClassName(gameVersion,
+                                                                            recipe.getManufacturerClassName());
         PlannerManufacturer.Builder builder = PlannerManufacturer
                 .newBuilder()
                 .withManufacturerClassName(document.getClassName())
