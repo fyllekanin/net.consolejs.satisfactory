@@ -1,4 +1,10 @@
 
+export interface ItemRecipe {
+    className: string;
+    displayName: string;
+    isAlternate: boolean;
+}
+
 export interface PlannerExtractor {
     manufacturerClassName: string;
     icon: string;

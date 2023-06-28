@@ -5,7 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { GameVersionType } from 'src/app/core/app/app.data';
 import { AppService } from 'src/app/core/app/app.service';
 import { LocalStorageConstant } from 'src/app/shared/constants/local-storage.constants';
@@ -27,12 +27,16 @@ import { LocalStorageConstant } from 'src/app/shared/constants/local-storage.con
 })
 export class HeaderComponent implements OnInit {
     private appService: AppService;
+    private router: Router;
+    private activatedRoute: ActivatedRoute;
 
     versions: Array<{ type: GameVersionType, gameVersion: string }> = [];
     version!: { type: GameVersionType, gameVersion: string } | undefined;
 
     constructor() {
         this.appService = inject(AppService);
+        this.router = inject(Router);
+        this.activatedRoute = inject(ActivatedRoute);
     }
 
     ngOnInit(): void {
@@ -44,5 +48,16 @@ export class HeaderComponent implements OnInit {
 
     onChangeGameVersion(type: GameVersionType) {
         localStorage.setItem(LocalStorageConstant.GAME_TYPE, type);
+
+        // changes the route without moving from the current view or
+        // triggering a navigation event,
+        this.router.navigate([], {
+            relativeTo: this.activatedRoute,
+            queryParams: {
+                gameVersion: this.appService.getGameVersion()
+            },
+            queryParamsHandling: 'merge',
+            // preserve the existing query params in the route
+        });
     }
 }

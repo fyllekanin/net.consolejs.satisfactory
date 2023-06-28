@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { PlannerComponent } from './planner.component';
-import { PlannerService, plannerResolver } from './planner.resolver';
+import { PlannerService, plannerResolver, recipeResolver } from './planner.service';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FlowChartComponent } from 'src/app/shared/flow-chart/flow-chart.component';
@@ -17,7 +17,8 @@ import { FlowChartComponent } from 'src/app/shared/flow-chart/flow-chart.compone
                 pathMatch: 'full',
                 component: PlannerComponent,
                 resolve: {
-                    solution: plannerResolver
+                    solution: plannerResolver,
+                    recipes: recipeResolver
                 },
                 runGuardsAndResolvers: 'paramsOrQueryParamsChange'
             }
