@@ -20,11 +20,12 @@ export class AppComponent implements AfterViewInit {
 
             boxSelectionEnabled: false,
             autounselectify: true,
+            wheelSensitivity: 0.1,
             style: [
                 {
                     selector: 'node',
                     style: {
-                        'content': 'data(id)',
+                        'content': 'data(name)',
                         'width': '150px',
                         'height': '100px',
                         'shape': 'rectangle',
@@ -94,21 +95,33 @@ export class AppComponent implements AfterViewInit {
     }
 
     private getNodes(): Array<cytoscape.NodeDefinition> {
-        return this.getFlatten().map(item => ({ data: { id: item.name, icon: item.icon } }));
+        return this.getFlatten().map(item => ({
+            data: {
+                id: item.name,
+                name: `${item.name}${item.amountMachines ? ' - x' + item.amountMachines : ''}`,
+                icon: item.icon
+            }
+        }));
     }
 
-    private getFlatten(): Array<{ name: string, parent: string | undefined, amount: number, icon?: string }> {
-        const result: Array<{ name: string, parent: string | undefined, amount: number, icon?: string }> = [
+    private getFlatten(): Array<{ name: string, parent: string | undefined, amount: number, icon?: string, amountMachines?: number }> {
+        const result: Array<{ name: string, parent: string | undefined, amount: number, icon?: string, amountMachines?: number }> = [
             { name: 'Result', parent: undefined, amount: exampleData.amount, icon: this.getIconUrl(exampleData.icon) },
-            { name: exampleData.displayName, parent: 'Result', amount: exampleData.amount, icon: this.getIconUrl(exampleData.manufacturer.icon) }
+            { name: exampleData.displayName, parent: 'Result', amount: exampleData.amount, icon: this.getIconUrl(exampleData.manufacturer.icon), amountMachines: exampleData.manufacturer?.amount }
         ];
         result.push(...this.getFlat(exampleData.preSteps, exampleData.displayName));
         return result;
     }
 
-    private getFlat(preSteps: Array<any>, parent?: string): Array<{ name: string, parent: string | undefined, amount: number, icon: string }> {
+    private getFlat(preSteps: Array<any>, parent?: string): Array<{ name: string, parent: string | undefined, amount: number, icon: string, amountMachines: number }> {
         return preSteps.reduce((prev, curr) => {
-            prev.push({ name: curr.displayName, parent: parent, amount: curr.amount, icon: this.getIconUrl(curr.manufacturer?.icon) || this.getIconUrl(curr.extractor?.icon) });
+            prev.push({
+                name: curr.displayName,
+                parent: parent,
+                amount: curr.amount,
+                icon: this.getIconUrl(curr.manufacturer?.icon) || this.getIconUrl(curr.extractor?.icon),
+                amountMachines: curr.manufacturer?.amount
+            });
             if (curr.preSteps) {
                 prev.push(...this.getFlat(curr.preSteps, curr.displayName));
             }
