@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { PlannerStep } from './planner.model';
 import { IFlowChart } from 'src/app/shared/flow-chart/flow-chart.interface';
+import { AppService } from 'src/app/core/app/app.service';
 
 interface FlattenData {
     name: string;
@@ -17,6 +18,8 @@ interface FlattenData {
     templateUrl: './planner.component.html'
 })
 export class PlannerComponent implements OnInit, OnDestroy {
+    private appService: AppService;
+
     private activatedRouter!: ActivatedRoute;
     private onDataSubscription!: Subscription;
     private data!: PlannerStep;
@@ -25,6 +28,7 @@ export class PlannerComponent implements OnInit, OnDestroy {
 
     constructor() {
         this.activatedRouter = inject(ActivatedRoute);
+        this.appService = inject(AppService);
     }
 
     ngOnInit(): void {
@@ -67,7 +71,7 @@ export class PlannerComponent implements OnInit, OnDestroy {
 
     private getFlattenData(): Array<FlattenData> {
         const result: Array<FlattenData> = [
-            { name: 'Result', amount: this.data.amount, icon: `/resources/test1${this.data.icon}.png` },
+            { name: 'Result', amount: this.data.amount, icon: `/resources/${this.appService.getGameVersion()}${this.data.icon}.png` },
             { name: this.data.displayName, parent: 'Result', amount: this.data.amount, icon: this.getIconUrl(this.data), amountMachines: this.data.manufacturer?.amount }
         ];
 
@@ -92,10 +96,10 @@ export class PlannerComponent implements OnInit, OnDestroy {
 
     private getIconUrl(data: PlannerStep): string | undefined {
         if (data.manufacturer) {
-            return `/resources/test1${data.manufacturer.icon}.png`;
+            return `/resources/${this.appService.getGameVersion()}${data.manufacturer.icon}.png`;
         }
         if (data.extractor) {
-            return `/resources/test1${data.extractor.icon}.png`;
+            return `/resources/${this.appService.getGameVersion()}${data.extractor.icon}.png`;
         }
         return undefined;
     }

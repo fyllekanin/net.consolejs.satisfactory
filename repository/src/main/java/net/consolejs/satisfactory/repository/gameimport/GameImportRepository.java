@@ -7,7 +7,9 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.model.Indexes;
+import com.mongodb.client.model.Sorts;
 import net.consolejs.satisfactory.entityview.document.gameimport.GameImportDocument;
+import net.consolejs.satisfactory.entityview.document.gameimport.GameImportType;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -16,6 +18,7 @@ import java.util.logging.Logger;
 public class GameImportRepository {
     private static final String GAME_VERSION = "gameVersion";
     private static final String TYPE = "type";
+    private static final String IMPORTED_AT = "importedAt";
     private static final Logger LOGGER = Logger.getLogger(GameImportRepository.class.getName());
     private static final String COLLECTION = "gameImports";
     private static final Gson GSON = new Gson();
@@ -24,7 +27,7 @@ public class GameImportRepository {
 
     public GameImportRepository(MongoDatabase database) {
         myCollection = database.getCollection(COLLECTION);
-        myCollection.createIndex(Indexes.ascending(GAME_VERSION, TYPE));
+        myCollection.createIndex(Indexes.ascending(GAME_VERSION, TYPE, IMPORTED_AT));
         myCollection.createIndex(Indexes.descending(GAME_VERSION),
                                  new IndexOptions().unique(true));
     }
@@ -33,6 +36,13 @@ public class GameImportRepository {
         Bson query = Filters.and(Filters.exists(GAME_VERSION), Filters.eq(GAME_VERSION, gameVersion));
 
         return myCollection.countDocuments(query) > 0;
+    }
+
+    public GameImportDocument getLatestOfType(GameImportType type) {
+        Bson query = Filters.and(Filters.exists(TYPE), Filters.eq(TYPE, type));
+        return getGameImportDocument(myCollection.find(query)
+                                                 .sort(Sorts.descending(IMPORTED_AT))
+                                                 .first());
     }
 
     public void create(GameImportDocument document) {
@@ -52,6 +62,10 @@ public class GameImportRepository {
             LOGGER.severe(String.format("Failed to delete import for gameVersion: \"%s\"",
                                         gameVersion));
         }
+    }
+
+    private GameImportDocument getGameImportDocument(Document document) {
+        return GSON.fromJson(GSON.toJson(document), GameImportDocument.class);
     }
 
     private Document getDocument(GameImportDocument gameImportDocument) {

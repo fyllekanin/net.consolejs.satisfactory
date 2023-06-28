@@ -7,9 +7,9 @@
     <span class="spacer"></span>
     <mat-form-field subscriptSizing="dynamic">
         <mat-label>Version</mat-label>
-        <mat-select [(value)]="version">
+        <mat-select [(value)]="version" (valueChange)="onChangeGameVersion($event.type)">
             <mat-option *ngFor="let item of versions" [value]="item">
-                {{item}}
+                {{item.type}} ({{item.gameVersion}})
             </mat-option>
         </mat-select>
     </mat-form-field>
