@@ -1,12 +1,27 @@
+import { AppComponent } from './app.component';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { AppComponent } from './app.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HeaderComponent } from './app-views/header/header.component';
+import { RouterModule } from '@angular/router';
 
 
 @NgModule({
     imports: [
-        BrowserModule
+        BrowserModule,
+        BrowserAnimationsModule,
+        HeaderComponent,
+        RouterModule.forRoot([
+            {
+                path: '',
+                loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule)
+            },
+            {
+                path: 'planner',
+                loadChildren: () => import('./pages/planner/planner.module').then(m => m.PlannerModule)
+            }
+        ])
     ],
     declarations: [
         AppComponent
@@ -14,4 +29,5 @@ import { AppComponent } from './app.component';
     providers: [],
     bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

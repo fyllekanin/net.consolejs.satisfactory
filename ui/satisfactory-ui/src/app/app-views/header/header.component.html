@@ -1,0 +1,16 @@
+<mat-toolbar>
+    <span id="text" routerLink="/">satisfactory.consolejet.net</span>
+    <a mat-flat-button color="transparent" routerLink="/planner">
+        <mat-icon inline=true>build</mat-icon>
+        Planner
+    </a>
+    <span class="spacer"></span>
+    <mat-form-field subscriptSizing="dynamic">
+        <mat-label>Version</mat-label>
+        <mat-select [(value)]="version">
+            <mat-option *ngFor="let item of versions" [value]="item">
+                {{item}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+</mat-toolbar>

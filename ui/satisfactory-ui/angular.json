@@ -16,6 +16,10 @@
             "outputPath": "dist/satisfactory-ui",
             "index": "src/index.html",
             "main": "src/main.ts",
+            "allowedCommonJsDependencies": [
+              "cytoscape",
+              "cytoscape-klay"
+            ],
             "polyfills": [
               "zone.js"
             ],
@@ -25,8 +29,8 @@
               "src/assets"
             ],
             "styles": [
-              "node_modules/@clr/ui/clr-ui.min.css",
-              "src/styles.css"
+              "@angular/material/prebuilt-themes/purple-green.css",
+              "src/styles.scss"
             ],
             "scripts": []
           },
@@ -88,7 +92,7 @@
               "src/assets"
             ],
             "styles": [
-              "node_modules/@clr/ui/clr-ui.min.css",
+              "@angular/material/prebuilt-themes/purple-green.css",
               "src/styles.css"
             ],
             "scripts": []
