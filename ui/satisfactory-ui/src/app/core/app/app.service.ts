@@ -1,19 +1,21 @@
 import { Injectable, inject } from '@angular/core';
-import { AppData, GameVersion, GameVersionType } from './app.data';
+import { AppData, GameVersion, GameVersionName } from './app.data';
 import { Observable, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { LocalStorageConstant } from 'src/app/shared/constants/local-storage.constants';
+import { Router } from '@angular/router';
 
 @Injectable({
     providedIn: 'root'
 })
 export class AppService {
     private httpClient: HttpClient;
+    private router: Router;
 
     private data!: AppData;
 
     constructor() {
         this.httpClient = inject(HttpClient);
+        this.router = inject(Router);
     }
 
     resolve(): Observable<AppData> {
@@ -28,7 +30,14 @@ export class AppService {
     }
 
     getGameVersion(): string | undefined {
-        const storedType: GameVersionType = localStorage.getItem(LocalStorageConstant.GAME_TYPE) as GameVersionType || GameVersionType.EARLY_ACCESS;
-        return this.data.gameVersions.find(item => item.type)?.gameVersion;
+        const keys: Array<string> = Object.keys(GameVersionName);
+        const name: string = this.router.url.split('/')[1];
+        for (const key of keys) {
+            if (GameVersionName[key] === name) {
+                return this.data.gameVersions.find(version => version.type === key)?.gameVersion;
+            }
+        }
+
+        return undefined;
     }
 }

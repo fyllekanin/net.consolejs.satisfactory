@@ -20,12 +20,21 @@ export function init_app(appService: AppService) {
         HeaderComponent,
         RouterModule.forRoot([
             {
-                path: '',
-                loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule)
+                path: ':gameVersion',
+                children: [
+                    {
+                        path: '',
+                        loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule)
+                    },
+                    {
+                        path: 'planner',
+                        loadChildren: () => import('./pages/planner/planner.module').then(m => m.PlannerModule)
+                    }
+                ]
             },
             {
-                path: 'planner',
-                loadChildren: () => import('./pages/planner/planner.module').then(m => m.PlannerModule)
+                path: '**',
+                redirectTo: '/ea'
             }
         ])
     ],

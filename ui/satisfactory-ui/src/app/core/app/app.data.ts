@@ -4,6 +4,11 @@ export enum GameVersionType {
     EXPERIMENTAL = 'EXPERIMENTAL'
 }
 
+export const GameVersionName: { [key: string]: string } = {
+    EARLY_ACCESS: 'ea',
+    EXPERIMENTAL: 'ep'
+}
+
 export interface GameVersion {
     type: GameVersionType;
     gameVersion: string;
