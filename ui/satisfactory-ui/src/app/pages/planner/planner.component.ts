@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { PlannerStep } from './planner.model';
@@ -24,6 +24,8 @@ export class PlannerComponent implements OnInit, OnDestroy {
     private onDataSubscription!: Subscription;
     private data!: PlannerStep;
 
+    private onResizeTimeout: any;
+
     flowChart!: IFlowChart;
 
     constructor() {
@@ -43,6 +45,19 @@ export class PlannerComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         this.onDataSubscription.unsubscribe();
+    }
+
+    @HostListener('window:resize', [])
+    onResize(): void {
+        if (this.onResizeTimeout) {
+            clearTimeout(this.onResizeTimeout);
+        }
+        this.onResizeTimeout = setTimeout(() => {
+            this.flowChart = this.data ? this.getFlowChart() : {
+                nodes: [],
+                edges: []
+            };
+        }, 100);
     }
 
     private getFlowChart(): IFlowChart {

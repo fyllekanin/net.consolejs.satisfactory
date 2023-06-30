@@ -48,7 +48,7 @@ export class HeaderComponent implements OnInit {
     }
 
     onChangeGameVersion(type: GameVersionType) {
-        const currentPath: string = this.router.url.split('/').slice(2).join('/');
+        const currentPath: string = location.pathname.split('/').slice(2).join('/');
         this.router.navigateByUrl(`/${GameVersionName[type]}/${currentPath}`);
     }
 }
