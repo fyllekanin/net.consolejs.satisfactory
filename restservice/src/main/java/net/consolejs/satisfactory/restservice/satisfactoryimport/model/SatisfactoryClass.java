@@ -3,6 +3,7 @@ package net.consolejs.satisfactory.restservice.satisfactoryimport.model;
 import com.google.gson.annotations.SerializedName;
 import net.consolejs.satisfactory.entityview.satisfactory.ResourceType;
 
+import java.util.List;
 import java.util.Objects;
 
 public class SatisfactoryClass {
@@ -33,6 +34,9 @@ public class SatisfactoryClass {
     @SerializedName("mProduct")
     private final String myProduct;
 
+    @SerializedName("mUnlocks")
+    private final List<SatisfactoryClassUnlocks> myUnlocks;
+
     private SatisfactoryClass(Builder builder) {
         myClassName = builder.myClassName;
         myFullName = builder.myFullName;
@@ -47,6 +51,7 @@ public class SatisfactoryClass {
         myAllowedResourceForms = builder.myAllowedResourceForms;
         myAllowedResources = builder.myAllowedResources;
         myProduct = builder.myProduct;
+        myUnlocks = builder.myUnlocks;
     }
 
     public static Builder newBuilder() {
@@ -105,6 +110,10 @@ public class SatisfactoryClass {
         return myProduct;
     }
 
+    public List<SatisfactoryClassUnlocks> getUnlocks() {
+        return myUnlocks;
+    }
+
     public Builder newBuilderFromCurrent() {
         return new Builder(this);
     }
@@ -133,7 +142,8 @@ public class SatisfactoryClass {
                 Objects.equals(getResourceType(), other.getResourceType()) &&
                 Objects.equals(getAllowedResourceForms(), other.getAllowedResourceForms()) &&
                 Objects.equals(getAllowedResources(), other.getAllowedResources()) &&
-                Objects.equals(getProduct(), other.getProduct());
+                Objects.equals(getProduct(), other.getProduct()) &&
+                Objects.equals(getUnlocks(), other.getUnlocks());
     }
 
     @Override
@@ -151,7 +161,8 @@ public class SatisfactoryClass {
                 myResourceType,
                 myAllowedResourceForms,
                 myAllowedResources,
-                myProduct
+                myProduct,
+                myUnlocks
         );
     }
 
@@ -169,6 +180,7 @@ public class SatisfactoryClass {
         private String myAllowedResourceForms;
         private String myAllowedResources;
         private String myProduct;
+        private List<SatisfactoryClassUnlocks> myUnlocks;
 
         private Builder() {
         }
@@ -187,6 +199,7 @@ public class SatisfactoryClass {
             myAllowedResourceForms = original.myAllowedResourceForms;
             myAllowedResources = original.myAllowedResources;
             myProduct = original.myProduct;
+            myUnlocks = original.myUnlocks;
         }
 
         public Builder withClassName(String className) {
@@ -251,6 +264,11 @@ public class SatisfactoryClass {
 
         public Builder withProduct(String product) {
             myProduct = product;
+            return this;
+        }
+
+        public Builder withUnlocks(List<SatisfactoryClassUnlocks> unlocks) {
+            myUnlocks = unlocks;
             return this;
         }
 

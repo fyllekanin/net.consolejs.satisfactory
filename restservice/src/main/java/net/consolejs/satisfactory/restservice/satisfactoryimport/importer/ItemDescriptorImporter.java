@@ -38,6 +38,7 @@ public class ItemDescriptorImporter implements Runnable {
 
     public void run() {
         ItemDescriptorRepository repository = myRepositoryFactory.of(ItemDescriptorRepository.class);
+        List<ItemRecipe> recipes = getAllRecipes();
         myClassWrappers
                 .stream()
                 .filter(entry -> NativeClass.FGItemDescriptor.equals(entry.getNativeClass()))
@@ -53,11 +54,12 @@ public class ItemDescriptorImporter implements Runnable {
                                                                         .withSmallIcon(getCleanIconValue(satisfactoryClass.getSmallIcon()))
                                                                         .withBigIcon(getCleanIconValue(satisfactoryClass.getBigIcon()))
                                                                         .withResourceType(satisfactoryClass.getResourceType())
-                                                                        .withRecipes(getRecipes(satisfactoryClass))
+                                                                        .withRecipes(getRecipesForClass(recipes,
+                                                                                                        satisfactoryClass))
                                                                         .build()));
     }
 
-    private List<ItemRecipe> getRecipes(SatisfactoryClass satisfactoryClass) {
+    private List<ItemRecipe> getAllRecipes() {
         return myClassWrappers
                 .stream()
                 .filter(entry -> NativeClass.FGRecipe.equals(entry.getNativeClass()))
@@ -73,6 +75,12 @@ public class ItemDescriptorImporter implements Runnable {
                         .isAlternate(isRecipeAlternate(entry))
                         .withManufacturerClassName(getManufacturerClassName(entry))
                         .build())
+                .collect(Collectors.toList());
+    }
+
+    private List<ItemRecipe> getRecipesForClass(List<ItemRecipe> recipes, SatisfactoryClass satisfactoryClass) {
+        return recipes
+                .stream()
                 .filter(entry -> isRecipeValidFor(satisfactoryClass, entry))
                 .collect(Collectors.toList());
     }

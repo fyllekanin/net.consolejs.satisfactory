@@ -75,7 +75,8 @@ public class ItemRecipe {
 
     @Override
     public int hashCode() {
-        return Objects.hash(myClassName, myDisplayName, myIngredients, myProduces, myIsAlternate, myManufacturerClassName);
+        return Objects.hash(myClassName, myDisplayName, myIngredients, myProduces, myIsAlternate,
+                            myManufacturerClassName);
     }
 
     public static class Builder {
