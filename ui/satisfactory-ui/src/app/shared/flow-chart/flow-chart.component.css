@@ -2,3 +2,7 @@
     width: 100%;
     display: block;
 }
+
+#chart {
+    height: calc(100% - 64px)
+}

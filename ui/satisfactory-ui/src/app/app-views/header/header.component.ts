@@ -5,7 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { GameVersionName, GameVersionType } from 'src/app/core/app/app.data';
 import { AppService } from 'src/app/core/app/app.service';
 
@@ -40,11 +40,7 @@ export class HeaderComponent implements OnInit {
         this.versions = this.appService.getGameVersions()
             .map(item => ({ type: item.type, gameVersion: item.gameVersion, name: GameVersionName[item.type] }));
 
-        this.router.events.subscribe(event => {
-            if (event instanceof NavigationEnd) {
-                this.version = this.versions.find(item => item.name === event.url.split('/')[1]);
-            }
-        });
+        this.version = this.versions.find(item => item.name === this.appService.getGameVersionName());
     }
 
     onChangeGameVersion(type: GameVersionType) {

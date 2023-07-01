@@ -1,1 +1,8 @@
-<app-shared-flow-chart [data]="flowChart"></app-shared-flow-chart>
+<mat-drawer-container class="example-container">
+    <mat-drawer mode="side" opened [disableClose]="true">
+        <app-planner-drawer></app-planner-drawer>
+    </mat-drawer>
+    <mat-drawer-content>
+        <app-shared-flow-chart [data]="flowChart"></app-shared-flow-chart>
+    </mat-drawer-content>
+</mat-drawer-container>

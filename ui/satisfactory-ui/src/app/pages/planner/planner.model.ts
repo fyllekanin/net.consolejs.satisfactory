@@ -5,6 +5,12 @@ export interface ItemRecipe {
     isAlternate: boolean;
 }
 
+export interface PlannerItem {
+    className: string;
+    displayName: string;
+    recipes: Array<ItemRecipe>;
+}
+
 export interface PlannerExtractor {
     manufacturerClassName: string;
     icon: string;

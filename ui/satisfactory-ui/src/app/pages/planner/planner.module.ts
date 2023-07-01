@@ -1,16 +1,29 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { PlannerComponent } from './planner.component';
-import { PlannerService, plannerResolver, recipeResolver } from './planner.service';
+import { PlannerService, itemsResolver, plannerResolver } from './planner.service';
 import { HttpClientModule } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { FlowChartComponent } from 'src/app/shared/flow-chart/flow-chart.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { PlanerDrawerComponent } from './drawer/planner-drawer.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
     imports: [
         HttpClientModule,
         CommonModule,
         FlowChartComponent,
+        MatSidenavModule,
+        MatFormFieldModule,
+        FormsModule,
+        MatAutocompleteModule,
+        MatInputModule,
+        ReactiveFormsModule,
+        AsyncPipe,
         RouterModule.forChild([
             {
                 path: '',
@@ -18,14 +31,15 @@ import { FlowChartComponent } from 'src/app/shared/flow-chart/flow-chart.compone
                 component: PlannerComponent,
                 resolve: {
                     solution: plannerResolver,
-                    recipes: recipeResolver
+                    items: itemsResolver
                 },
                 runGuardsAndResolvers: 'paramsOrQueryParamsChange'
             }
         ])
     ],
     declarations: [
-        PlannerComponent
+        PlannerComponent,
+        PlanerDrawerComponent
     ],
     providers: [
         PlannerService

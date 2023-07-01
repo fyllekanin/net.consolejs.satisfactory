@@ -24,8 +24,8 @@ export class FlowChartComponent implements AfterViewInit {
     }
 
     @Input()
-    @HostBinding('style.height.px')
-    height: number = 700;
+    @HostBinding('style.height')
+    height: string = '100%';
 
     ngAfterViewInit(): void {
         cytoscape.use(klay);

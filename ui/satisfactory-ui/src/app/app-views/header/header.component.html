@@ -1,6 +1,6 @@
 <mat-toolbar>
-    <span id="text" routerLink="/">satisfactory.consolejs.net</span>
-    <a mat-flat-button color="transparent" routerLink="/planner">
+    <span id="text" [routerLink]="version?.name + '/'">satisfactory.consolejs.net</span>
+    <a mat-flat-button color="transparent" [routerLink]="version?.name + '/planner'">
         <mat-icon inline=true>build</mat-icon>
         Planner
     </a>

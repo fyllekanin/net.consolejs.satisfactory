@@ -33,11 +33,11 @@ public class PlannerProvider {
                 .doItemExistByClassName(gameVersion, className);
     }
 
-    public PlannerStep getSolution(String gameVersion, String itemClassName, float amount) {
+    public PlannerStep getSolution(String gameVersion, String itemClassName, float amount, String recipeClassName) {
         ItemDescriptorDocument document = myRepositoryFactory
                 .of(ItemDescriptorRepository.class)
                 .findByClassName(gameVersion, itemClassName);
-        ItemRecipe recipe = getItemRecipe(document);
+        ItemRecipe recipe = getItemRecipe(document, recipeClassName);
 
         return PlannerStep
                 .newBuilder()
@@ -159,6 +159,20 @@ public class PlannerProvider {
     }
 
     private ItemRecipe getItemRecipe(ItemDescriptorDocument document) {
+        return getItemRecipe(document, null);
+    }
+
+    private ItemRecipe getItemRecipe(ItemDescriptorDocument document, String recipeClassName) {
+        if (recipeClassName != null) {
+            return document
+                    .getRecipes()
+                    .stream()
+                    .filter(item -> item.getClassName()
+                                        .equals(recipeClassName))
+                    .findFirst()
+                    .orElse(null);
+        }
+
         return document
                 .getRecipes()
                 .stream()

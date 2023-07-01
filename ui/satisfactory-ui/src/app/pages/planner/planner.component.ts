@@ -1,4 +1,4 @@
-import { Component, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { PlannerStep } from './planner.model';
@@ -15,7 +15,9 @@ interface FlattenData {
 
 @Component({
     selector: 'app-page-planner',
-    templateUrl: './planner.component.html'
+    templateUrl: './planner.component.html',
+    styleUrls: ['./planner.component.css'],
+    encapsulation: ViewEncapsulation.None
 })
 export class PlannerComponent implements OnInit, OnDestroy {
     private appService: AppService;

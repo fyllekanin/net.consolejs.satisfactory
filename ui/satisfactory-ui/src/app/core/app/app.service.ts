@@ -26,6 +26,10 @@ export class AppService {
         return this.data.gameVersions;
     }
 
+    getGameVersionName(): string {
+        return location.pathname.split('/')[1];
+    }
+
     getGameVersion(): string | undefined {
         const keys: Array<string> = Object.keys(GameVersionName);
         const name: string = location.pathname.split('/')[1];

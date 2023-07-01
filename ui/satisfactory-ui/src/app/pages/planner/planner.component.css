@@ -1,0 +1,14 @@
+mat-drawer-container {
+    position: fixed;
+    height: calc(100% - 64px);
+    width: 100%;
+}
+
+mat-drawer {
+    position: fixed;
+    top: 64px;
+    bottom: 0;
+    left: 0;
+    padding: 10px;
+    min-width: 270px;
+}

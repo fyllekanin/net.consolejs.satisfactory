@@ -1,0 +1,31 @@
+<h2>Configuration</h2>
+
+<h3>Produce:</h3>
+<mat-form-field class="example-full-width">
+    <mat-label>Item</mat-label>
+    <input type="text" placeholder="Pick one" aria-label="Item" matInput [formControl]="myItemControl"
+        [matAutocomplete]="autoItem">
+    <mat-autocomplete autoActiveFirstOption #autoItem="matAutocomplete" [displayWith]="getDisplayValue">
+        <mat-option *ngFor="let option of filteredItemOptions | async" [value]="option">
+            {{option.displayName}}
+        </mat-option>
+    </mat-autocomplete>
+</mat-form-field>
+
+<h3>Recipe:</h3>
+<mat-form-field class="example-full-width">
+    <mat-label>Recipe</mat-label>
+    <input type="text" placeholder="Pick one" aria-label="Recipe" matInput [formControl]="myRecipeControl"
+        [matAutocomplete]="autoRecipe">
+    <mat-autocomplete autoActiveFirstOption #autoRecipe="matAutocomplete" [displayWith]="getDisplayValue">
+        <mat-option *ngFor="let option of filteredRecipeOptions | async" [value]="option">
+            {{option.displayName}}
+        </mat-option>
+    </mat-autocomplete>
+</mat-form-field>
+
+<h3>Amount:</h3>
+<mat-form-field class="example-form-field">
+    <mat-label>Amount</mat-label>
+    <input matInput type="number" [formControl]="myAmountControl">
+</mat-form-field>

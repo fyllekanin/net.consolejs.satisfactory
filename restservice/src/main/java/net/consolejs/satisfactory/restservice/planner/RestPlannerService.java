@@ -7,11 +7,13 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import net.consolejs.satisfactory.entityview.document.itemdescriptor.ItemRecipe;
 import net.consolejs.satisfactory.repository.RepositoryFactory;
 import net.consolejs.satisfactory.repository.itemdescriptor.ItemDescriptorRepository;
+import net.consolejs.satisfactory.restservice.planner.model.PlannerItem;
 import net.consolejs.satisfactory.restservice.planner.model.PlannerStep;
 import net.consolejs.satisfactory.restservice.planner.provider.PlannerProvider;
 
@@ -32,12 +34,12 @@ public class RestPlannerService {
     }
 
     @GET
-    @Path("/{gameVersion}/recipes")
+    @Path("/{gameVersion}/items")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAvailableRecipes(@PathParam("gameVersion") String gameVersion) {
+    public Response getAvailableItems(@PathParam("gameVersion") String gameVersion) {
         return Response
                 .status(Response.Status.OK)
-                .entity(new Gson().toJson(getAllRecipes(gameVersion)))
+                .entity(new Gson().toJson(getItems(gameVersion)))
                 .build();
     }
 
@@ -46,19 +48,35 @@ public class RestPlannerService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPlanning(@PathParam("gameVersion") String gameVersion,
                                 @PathParam("itemClassName") String itemClassName,
-                                @PathParam("amount") float amount) {
+                                @PathParam("amount") float amount,
+                                @QueryParam("recipeClassName") String recipeClassName) {
         if (!myPlannerProvider.doesItemExist(gameVersion, itemClassName)) {
             return Response
                     .status(Response.Status.NOT_FOUND)
                     .build();
         }
 
-        PlannerStep solution = myPlannerProvider.getSolution(gameVersion, itemClassName, amount);
+        PlannerStep solution = myPlannerProvider.getSolution(gameVersion, itemClassName, amount, recipeClassName);
 
         return Response
                 .status(Response.Status.OK)
                 .entity(new Gson().toJson(solution, PlannerStep.class))
                 .build();
+    }
+
+    public List<PlannerItem> getItems(String gameVersion) {
+        return myRepositoryFactory
+                .of(ItemDescriptorRepository.class)
+                .getAllForGameVersion(gameVersion)
+                .stream()
+                .filter(item -> item.getRecipes()
+                                    .size() > 0)
+                .map(item -> PlannerItem.newBuilder()
+                                        .withClassName(item.getClassName())
+                                        .withDisplayName(item.getDisplayName())
+                                        .withRecipes(item.getRecipes())
+                                        .build())
+                .collect(Collectors.toList());
     }
 
     private List<ItemRecipe> getAllRecipes(String gameVersion) {
