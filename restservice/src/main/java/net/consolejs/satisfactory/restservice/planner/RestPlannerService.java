@@ -10,7 +10,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import net.consolejs.satisfactory.entityview.document.itemdescriptor.ItemRecipe;
 import net.consolejs.satisfactory.repository.RepositoryFactory;
 import net.consolejs.satisfactory.repository.itemdescriptor.ItemDescriptorRepository;
 import net.consolejs.satisfactory.restservice.planner.model.PlannerItem;
@@ -76,17 +75,6 @@ public class RestPlannerService {
                                         .withDisplayName(item.getDisplayName())
                                         .withRecipes(item.getRecipes())
                                         .build())
-                .collect(Collectors.toList());
-    }
-
-    private List<ItemRecipe> getAllRecipes(String gameVersion) {
-        return myRepositoryFactory
-                .of(ItemDescriptorRepository.class)
-                .getAllForGameVersion(gameVersion)
-                .stream()
-                .flatMap(entry -> entry
-                        .getRecipes()
-                        .stream())
                 .collect(Collectors.toList());
     }
 }

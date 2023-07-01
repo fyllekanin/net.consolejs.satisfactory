@@ -48,6 +48,10 @@ public class ItemRecipe {
         return myProduces;
     }
 
+    public int getProducesSize() {
+        return myProduces.size();
+    }
+
     public boolean isAlternate() {
         return myIsAlternate;
     }

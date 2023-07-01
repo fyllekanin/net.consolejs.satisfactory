@@ -17,6 +17,7 @@ import net.consolejs.satisfactory.restservice.planner.model.PlannerExtractor;
 import net.consolejs.satisfactory.restservice.planner.model.PlannerManufacturer;
 import net.consolejs.satisfactory.restservice.planner.model.PlannerStep;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,7 @@ public class PlannerProvider {
         ItemDescriptorDocument document = myRepositoryFactory
                 .of(ItemDescriptorRepository.class)
                 .findByClassName(gameVersion, itemClassName);
-        ItemRecipe recipe = getItemRecipe(document, recipeClassName);
+        ItemRecipe recipe = getItemRecipe(document, null, recipeClassName);
 
         return PlannerStep
                 .newBuilder()
@@ -56,17 +57,18 @@ public class PlannerProvider {
                 .of(ResourceRepository.class)
                 .findByClassName(gameVersion, ingredient.getItemClassName());
 
-        float amount = ResourceType.RF_LIQUID.equals(document.getResourceType()) ?
-                ingredient.getAmount() / 1000 : ingredient.getAmount();
-        return getPlannerStep(gameVersion, document, amount * parentAmount);
+        return getPlannerStep(gameVersion, document, ingredient.getAmount() * parentAmount);
     }
 
-    private PlannerStep getPlannerStepForPart(String gameVersion, ItemRecipeIngredient ingredient, float parentAmount) {
+    private PlannerStep getPlannerStepForPart(String gameVersion, ItemRecipeIngredient ingredient, float parentAmount
+            , String parentRecipe) {
         ItemDescriptorDocument document = myRepositoryFactory
                 .of(ItemDescriptorRepository.class)
                 .findByClassName(gameVersion, ingredient.getItemClassName());
 
-        return getPlannerStep(gameVersion, getItemRecipe(document), ingredient.getAmount() * parentAmount,
+        float amount = ResourceType.RF_LIQUID.equals(document.getResourceType()) ?
+                ingredient.getAmount() / 1000 : ingredient.getAmount();
+        return getPlannerStep(gameVersion, getItemRecipe(document, parentRecipe), amount * parentAmount,
                               document.getClassName());
     }
 
@@ -91,7 +93,8 @@ public class PlannerProvider {
                     float producing = getAmountProducing(recipe.getProduces(), itemClassName);
                     return ingredient.isResource() ? getPlannerStepForResource(gameVersion, ingredient,
                                                                                parentAmount / producing) :
-                            getPlannerStepForPart(gameVersion, ingredient, parentAmount / producing);
+                            getPlannerStepForPart(gameVersion, ingredient, parentAmount / producing,
+                                                  recipe.getClassName());
                 })
                 .collect(Collectors.toList());
     }
@@ -158,26 +161,30 @@ public class PlannerProvider {
         return builder.build();
     }
 
-    private ItemRecipe getItemRecipe(ItemDescriptorDocument document) {
-        return getItemRecipe(document, null);
+    private ItemRecipe getItemRecipe(ItemDescriptorDocument document, String parentRecipe) {
+        return getItemRecipe(document, parentRecipe, null);
     }
 
-    private ItemRecipe getItemRecipe(ItemDescriptorDocument document, String recipeClassName) {
+    private ItemRecipe getItemRecipe(ItemDescriptorDocument document, String parentRecipe, String recipeClassName) {
         if (recipeClassName != null) {
             return document
                     .getRecipes()
                     .stream()
+                    .filter(item -> !item.getClassName()
+                                         .equals(parentRecipe))
                     .filter(item -> item.getClassName()
                                         .equals(recipeClassName))
-                    .findFirst()
+                    .min(Comparator.comparingInt(ItemRecipe::getProducesSize))
                     .orElse(null);
         }
 
         return document
                 .getRecipes()
                 .stream()
+                .filter(item -> !item.getClassName()
+                                     .equals(parentRecipe))
                 .filter(item -> !item.isAlternate())
-                .findFirst()
+                .min(Comparator.comparingInt(ItemRecipe::getProducesSize))
                 .orElse(null);
     }
 }
