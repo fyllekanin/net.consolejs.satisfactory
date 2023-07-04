@@ -69,7 +69,7 @@ export class PlannerComponent implements OnInit, OnDestroy {
             nodes: flattenData.map(item => ({
                 data: {
                     id: item.name,
-                    name: `${item.name}${item.amountMachines ? ' - x' + item.amountMachines : ''}`,
+                    name: `${item.name}${item.amountMachines ? ' - x' + this.getRoundedNumber(item.amountMachines) : ''}`,
                     backgroundImage: item.icon
                 }
             })),
@@ -80,7 +80,7 @@ export class PlannerComponent implements OnInit, OnDestroy {
                         id: `${item.name}-${item.parent}`,
                         source: item.name,
                         target: `${item.parent}`,
-                        text: `${item.amount}`
+                        text: `${this.getRoundedNumber(item.amount)}`
                     }
                 }))
         }
@@ -119,5 +119,15 @@ export class PlannerComponent implements OnInit, OnDestroy {
             return `/resources/${this.appService.getGameVersion()}${data.extractor.icon}.png`;
         }
         return undefined;
+    }
+
+    private getRoundedNumber(amount: number): number {
+        if (amount >= 1 && amount % 1 === 0) {
+            return amount;
+        } else if (amount < 1 && amount > 0 && String(amount).split('.')[1].length === 1) {
+            return amount;
+        }
+
+        return (Math.round(amount * 10) / 10) + 0.1;
     }
 }

@@ -11,11 +11,14 @@ public class ItemRecipeIngredient {
     private final float myAmount;
     @SerializedName("isResource")
     private final boolean myIsResource;
+    @SerializedName("amountPerMinute")
+    private final float myAmountPerMinute;
 
     private ItemRecipeIngredient(Builder builder) {
         myItemClassName = builder.myItemClassName;
         myAmount = builder.myAmount;
         myIsResource = builder.myIsResource;
+        myAmountPerMinute = builder.myAmountPerMinute;
     }
 
     public static Builder newBuilder() {
@@ -34,6 +37,10 @@ public class ItemRecipeIngredient {
         return myIsResource;
     }
 
+    public float getAmountPerMinute() {
+        return myAmountPerMinute;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -45,18 +52,20 @@ public class ItemRecipeIngredient {
         ItemRecipeIngredient other = (ItemRecipeIngredient) obj;
         return Objects.equals(myItemClassName, other.myItemClassName) &&
                 Float.compare(myAmount, other.myAmount) == 0 &&
-                Objects.equals(myIsResource, other.myIsResource);
+                Objects.equals(myIsResource, other.myIsResource) &&
+                Objects.equals(myAmountPerMinute, other.myAmountPerMinute);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(myItemClassName, myAmount, myIsResource);
+        return Objects.hash(myItemClassName, myAmount, myIsResource, myAmountPerMinute);
     }
 
     public static class Builder {
         private String myItemClassName;
         private float myAmount;
         private boolean myIsResource;
+        private float myAmountPerMinute;
 
         private Builder() {
         }
@@ -73,6 +82,11 @@ public class ItemRecipeIngredient {
 
         public Builder isResource(boolean isResource) {
             myIsResource = isResource;
+            return this;
+        }
+
+        public Builder withAmountPerMinute(float amountPerMinute) {
+            myAmountPerMinute = amountPerMinute;
             return this;
         }
 

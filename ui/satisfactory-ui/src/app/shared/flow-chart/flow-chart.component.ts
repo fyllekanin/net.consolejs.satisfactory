@@ -45,11 +45,7 @@ export class FlowChartComponent implements AfterViewInit {
                 name: 'klay',
                 fit: true,
                 padding: 15,
-                spacingFactor: 2,
-                klay: {
-                    nodeLayering: 'INTERACTIVE',
-                    randomizationSeed: 2
-                }
+                spacingFactor: 2
             },
             elements: {
                 nodes: this._data.nodes,

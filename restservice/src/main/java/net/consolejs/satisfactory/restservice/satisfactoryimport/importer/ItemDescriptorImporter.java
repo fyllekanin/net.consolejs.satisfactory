@@ -110,11 +110,15 @@ public class ItemDescriptorImporter implements Runnable {
 
         Matcher matcher = RECIPE_PRODUCT_PATTERN.matcher(recipe.getIngredients());
         while (matcher.find()) {
+            float perMin = (ONE_MINUTE / recipe.getManufactoringDuration())
+                    * Float.parseFloat(matcher.group(3));
+
             ingredients.add(ItemRecipeIngredient
                                     .newBuilder()
                                     .withItemClassName(matcher.group(2))
                                     .withAmount(Float.parseFloat(matcher.group(3)))
                                     .isResource(RAW_RESOURCES.equals(matcher.group(1)))
+                                    .withAmountPerMinute(perMin)
                                     .build());
         }
         return ingredients;

@@ -40,24 +40,28 @@ public class PlannerProvider {
                 .findByClassName(gameVersion, itemClassName);
         ItemRecipe recipe = getItemRecipe(document, null, recipeClassName);
 
+        PlannerManufacturer manufacturer = getManufacturer(gameVersion, recipe, document, amount);
         return PlannerStep
                 .newBuilder()
                 .withRecipeClassName(recipe.getClassName())
                 .withAmount(amount)
                 .withDisplayName(recipe.getDisplayName())
-                .withManufacturer(getManufacturer(gameVersion, recipe, itemClassName, amount))
-                .withPreSteps(getPreSteps(gameVersion, recipe, amount, itemClassName))
+                .withManufacturer(manufacturer)
+                .withPreSteps(getPreSteps(gameVersion, recipe, manufacturer.getAmount()))
                 .withIcon(document.getBigIcon())
                 .build();
     }
 
     private PlannerStep getPlannerStepForResource(String gameVersion, ItemRecipeIngredient ingredient,
-                                                  float parentAmount) {
+                                                  float parentManufacturers) {
         ResourceDocument document = myRepositoryFactory
                 .of(ResourceRepository.class)
                 .findByClassName(gameVersion, ingredient.getItemClassName());
 
-        return getPlannerStep(gameVersion, document, ingredient.getAmount() * parentAmount);
+        float amount = ResourceType.RF_LIQUID.equals(document.getResourceType()) ?
+                ingredient.getAmountPerMinute() / 1000 :
+                ingredient.getAmountPerMinute();
+        return getPlannerStep(gameVersion, document, parentManufacturers * amount);
     }
 
     private PlannerStep getPlannerStepForPart(String gameVersion, ItemRecipeIngredient ingredient, float parentAmount
@@ -67,36 +71,33 @@ public class PlannerProvider {
                 .findByClassName(gameVersion, ingredient.getItemClassName());
 
         float amount = ResourceType.RF_LIQUID.equals(document.getResourceType()) ?
-                ingredient.getAmount() / 1000 : ingredient.getAmount();
-        return getPlannerStep(gameVersion, getItemRecipe(document, parentRecipe), amount * parentAmount,
-                              document.getClassName());
+                parentAmount * (ingredient.getAmountPerMinute() / 1000) :
+                parentAmount * ingredient.getAmountPerMinute();
+        return getPlannerStep(gameVersion, getItemRecipe(document, parentRecipe), amount,
+                              document);
     }
 
-    private PlannerStep getPlannerStep(String gameVersion, ItemRecipe recipe, float amount, String itemClassName) {
+    private PlannerStep getPlannerStep(String gameVersion, ItemRecipe recipe, float amount,
+                                       ItemDescriptorDocument document) {
+        PlannerManufacturer manufacturer = getManufacturer(gameVersion, recipe, document, amount);
         return PlannerStep
                 .newBuilder()
                 .withRecipeClassName(recipe.getClassName())
                 .withAmount(amount)
                 .withDisplayName(recipe.getDisplayName())
-                .withManufacturer(getManufacturer(gameVersion, recipe, itemClassName, amount))
-                .withPreSteps(getPreSteps(gameVersion, recipe, amount, itemClassName))
+                .withManufacturer(manufacturer)
+                .withPreSteps(getPreSteps(gameVersion, recipe, manufacturer.getAmount()))
                 .build();
     }
 
-    private List<PlannerStep> getPreSteps(String gameVersion, ItemRecipe recipe, float parentAmount,
-                                          String itemClassName) {
-        return recipe
-                .getIngredients()
-                .stream()
-                .map(ingredient -> {
-
-                    float producing = getAmountProducing(recipe.getProduces(), itemClassName);
-                    return ingredient.isResource() ? getPlannerStepForResource(gameVersion, ingredient,
-                                                                               parentAmount / producing) :
-                            getPlannerStepForPart(gameVersion, ingredient, parentAmount / producing,
-                                                  recipe.getClassName());
-                })
-                .collect(Collectors.toList());
+    private List<PlannerStep> getPreSteps(String gameVersion, ItemRecipe recipe, float parentManufacturers) {
+        return recipe.getIngredients()
+                     .stream()
+                     .map(ingredient -> ingredient.isResource() ? getPlannerStepForResource(gameVersion, ingredient,
+                                                                                            parentManufacturers) :
+                             getPlannerStepForPart(gameVersion, ingredient, parentManufacturers,
+                                                   recipe.getClassName()))
+                     .collect(Collectors.toList());
     }
 
     private float getAmountProducing(List<ItemRecipeProduct> products, String itemClassName) {
@@ -105,7 +106,7 @@ public class PlannerProvider {
                 .filter(item -> item
                         .getItemClassName()
                         .equals(itemClassName))
-                .map(ItemRecipeProduct::getAmount)
+                .map(ItemRecipeProduct::getAmountPerMinute)
                 .findFirst()
                 .orElse(1F);
     }
@@ -139,25 +140,29 @@ public class PlannerProvider {
                         .orElse(null);
     }
 
-    private PlannerManufacturer getManufacturer(String gameVersion, ItemRecipe recipe, String itemClassName,
+    private PlannerManufacturer getManufacturer(String gameVersion, ItemRecipe recipe,
+                                                ItemDescriptorDocument itemDocument,
                                                 float amount) {
         ManufacturerDocument document = myRepositoryFactory.of(ManufacturerRepository.class)
                                                            .findByClassName(gameVersion,
                                                                             recipe.getManufacturerClassName());
-        PlannerManufacturer.Builder builder = PlannerManufacturer
-                .newBuilder()
-                .withManufacturerClassName(document.getClassName())
-                .withIcon(document.getSmallIcon())
-                .withDisplayName(document.getDisplayName());
+        PlannerManufacturer.Builder builder = PlannerManufacturer.newBuilder()
+                                                                 .withManufacturerClassName(document.getClassName())
+                                                                 .withIcon(document.getSmallIcon())
+                                                                 .withDisplayName(document.getDisplayName());
 
-        recipe
-                .getProduces()
-                .stream()
-                .filter(item -> item
-                        .getItemClassName()
-                        .equals(itemClassName))
-                .findFirst()
-                .ifPresent(product -> builder.withAmount(amount / product.getAmountPerMinute()));
+        recipe.getProduces()
+              .stream()
+              .filter(item -> item
+                      .getItemClassName()
+                      .equals(itemDocument.getClassName()))
+              .findFirst()
+              .ifPresent(product -> {
+
+                  float perMinute = ResourceType.RF_LIQUID.equals(itemDocument.getResourceType()) ?
+                          product.getAmountPerMinute() / 1000 : product.getAmountPerMinute();
+                  builder.withAmount(amount / perMinute);
+              });
         return builder.build();
     }
 
