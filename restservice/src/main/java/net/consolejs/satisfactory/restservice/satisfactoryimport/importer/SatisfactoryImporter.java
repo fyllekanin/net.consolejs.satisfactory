@@ -12,6 +12,7 @@ import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 
 public class SatisfactoryImporter {
@@ -38,32 +39,12 @@ public class SatisfactoryImporter {
 
     public void run(FormDataMultiPart formParams) throws IOException, InterruptedException {
         SatisfactoryImportProvider provider = new SatisfactoryImportProvider(formParams);
+        List<Thread> importers = getImporters(provider);
 
-        SatisfactoryImport satisfactoryImport = provider.getSatisfactoryImport();
-
-        List<SatisfactoryClassWrapper> classWrapperList = provider.getSatisfactoryClassWrappers(satisfactoryImport);
-        Thread imageResourceImporter = new Thread(new ImageResourceImporter(myFileService, satisfactoryImport,
-                                                                            provider.getGameVersion()));
-        Thread resourceImporter = new Thread(new ResourceImporter(myRepositoryFactory, classWrapperList,
-                                                                  provider.getGameVersion()));
-        Thread manufacturerImporter = new Thread(new ManufacturerImporter(myRepositoryFactory, classWrapperList,
-                                                                          provider.getGameVersion()));
-        Thread extractorImporter = new Thread(new ExtractorImporter(myRepositoryFactory, classWrapperList,
-                                                                    provider.getGameVersion()));
-        Thread itemDescriptorImporter = new Thread(new ItemDescriptorImporter(myRepositoryFactory, classWrapperList,
-                                                                              provider.getGameVersion()));
-
-        imageResourceImporter.start();
-        resourceImporter.start();
-        manufacturerImporter.start();
-        extractorImporter.start();
-        itemDescriptorImporter.start();
-
-        imageResourceImporter.join();
-        resourceImporter.join();
-        manufacturerImporter.join();
-        extractorImporter.join();
-        itemDescriptorImporter.join();
+        importers.forEach(Thread::start);
+        for (Thread importer : importers) {
+            importer.join();
+        }
 
         myRepositoryFactory.of(GameImportRepository.class)
                            .create(GameImportDocument.newBuilder()
@@ -72,5 +53,23 @@ public class SatisfactoryImporter {
                                                      .withImportedAt(Instant.now()
                                                                             .toEpochMilli())
                                                      .build());
+    }
+
+    private List<Thread> getImporters(SatisfactoryImportProvider provider) throws IOException {
+        SatisfactoryImport satisfactoryImport = provider.getSatisfactoryImport();
+        List<SatisfactoryClassWrapper> classWrapperList = provider.getSatisfactoryClassWrappers(satisfactoryImport);
+
+        return Arrays.asList(
+                new Thread(new ImageResourceImporter(myFileService, satisfactoryImport,
+                                                     provider.getGameVersion())),
+                new Thread(new ResourceImporter(myRepositoryFactory, classWrapperList,
+                                                provider.getGameVersion())),
+                new Thread(new ManufacturerImporter(myRepositoryFactory, classWrapperList,
+                                                    provider.getGameVersion())),
+                new Thread(new ExtractorImporter(myRepositoryFactory, classWrapperList,
+                                                 provider.getGameVersion())),
+                new Thread(new ItemDescriptorImporter(myRepositoryFactory, classWrapperList,
+                                                      provider.getGameVersion()))
+        );
     }
 }

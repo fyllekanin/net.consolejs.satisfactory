@@ -128,6 +128,12 @@ export class PlannerComponent implements OnInit, OnDestroy {
             return amount;
         }
 
-        return (Math.round(amount * 10) / 10) + 0.1;
+        const value = (Math.round(amount * 10) / 10) + 0.1;
+        const stringValue = String(value);
+        const parts = stringValue.split('.');
+        if (parts.length > 1 && parts[1].length > 1) {
+            return Number(`${parts[0]}.${parts[1].slice(0, 1)}`);
+        }
+        return value;
     }
 }
